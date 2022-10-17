@@ -12,7 +12,7 @@ func main() {
 	fs := http.FileServer(http.Dir("../static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	port := "127.0.0.1:8000"
+	port := "https://neeft-back.herokuapp.com"
 	println("Server listen on", port)
 	err := http.ListenAndServe(port, nil)
 	if err != nil {
