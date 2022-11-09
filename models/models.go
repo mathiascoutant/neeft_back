@@ -25,3 +25,11 @@ type Team struct {
 	CreatorName  string `json:"name_creator"`
 	CreationDate string `json:"date_creator"`
 }
+
+type Tournament struct {
+	Id    int    `json:"id"`
+	Name  string `json:"tournament_name"`
+	Count int    `json:"count"`
+	Price int    `json:"price"`
+	Game  string `json:"game"`
+}

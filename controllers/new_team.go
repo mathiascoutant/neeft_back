@@ -20,6 +20,12 @@ func NewTeam(c *gin.Context) {
 	teamGame := c.PostForm("game")
 	teamCreator := c.PostForm("creator")
 
+	if len(teamName) == 0 || len(teamGame) == 0 || len(teamCreator) == 0 {
+		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid informations provided", "code": 401})
+		db.Close()
+		return
+	}
+
 	// Check if the team already exists
 	row := db.QueryRow("select * from teams where team_name=?", teamName)
 	team := new(models.Team)
