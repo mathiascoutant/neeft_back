@@ -12,6 +12,8 @@ func main() {
 	r := gin.Default()
 
 	r.GET("/", controllers.Accueil)
+	r.POST("/connect", controllers.Connect)
+	r.POST("/new_team", controllers.NewTeam)
 
 	r.Run()
 }
