@@ -27,9 +27,12 @@ type Team struct {
 }
 
 type Tournament struct {
-	Id    int    `json:"id"`
-	Name  string `json:"tournament_name"`
-	Count int    `json:"count"`
-	Price int    `json:"price"`
-	Game  string `json:"game"`
+	Id         int    `json:"id"`
+	Name       string `json:"tournament_name"`
+	Count      int    `json:"count"`
+	Price      int    `json:"price"`
+	Game       string `json:"game"`
+	TeamsCount int    `json:"nbr_teams"`
+	IsFinished int    `json:"end"`
+	Mode       string `json:"mode"`
 }
