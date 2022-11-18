@@ -29,7 +29,7 @@ func NewTournament(c *gin.Context) {
 	}
 
 	// Check if the tournament already exists
-	row := db.QueryRow("select * from tournaments where name=?", tournamentName)
+	row := db.QueryRow("select * from tournaments where name=? and game=?", tournamentName, tournamentGame)
 	tournament := new(models.Tournament)
 	err = row.Scan(&tournament.Id, &tournament.Name, &tournament.Count, &tournament.Price, &tournament.Game, &tournament.TeamsCount, &tournament.IsFinished, &tournament.Mode)
 	if err == nil && tournament.Name == tournamentName && tournament.IsFinished == 0 {
@@ -89,7 +89,7 @@ func NewTournament(c *gin.Context) {
 	}
 
 	// Get the tournament's infos
-	getIdRow := db.QueryRow("select * from tournaments where name=? order by id desc", tournamentName)
+	getIdRow := db.QueryRow("select * from tournaments where name=? and game=? order by id desc", tournamentName, tournamentGame)
 	tournament = new(models.Tournament)
 	err = getIdRow.Scan(&tournament.Id, &tournament.Name, &tournament.Count, &tournament.Price, &tournament.Game, &tournament.TeamsCount, &tournament.IsFinished, &tournament.Mode)
 	if err != nil {
