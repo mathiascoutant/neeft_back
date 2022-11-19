@@ -1,0 +1,10 @@
+Inscription:
+    Refus si Champ username vide: OK
+    Refus si Champ password vide: OK
+    Refus si Champ password < 4 caractères: OK
+    Refus si Champ first_name vide: OK
+    Refus si Champ last_name vide: OK
+    Refus si Champ email vide: OK
+    Refus si Champ email sans @: OK
+    Refus si inscription avec le même username: OK
+    Refus si inscription avec le même email: OK
