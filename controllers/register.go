@@ -7,6 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"neeft_back/models"
 	"net/http"
+	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -25,6 +26,31 @@ func Register(c *gin.Context) {
 	inFirstName := c.PostForm("first_name")
 	inLastName := c.PostForm("last_name")
 	inEmail := c.PostForm("email")
+
+	if len(inUsername) == 0 {
+		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid username", "code": 401})
+		return
+	}
+
+	if len(inPassword) < 4 {
+		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid password or password length too short (must be more than 4 characters long)", "code": 401})
+		return
+	}
+
+	if len(inFirstName) == 0 {
+		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid first name", "code": 401})
+		return
+	}
+
+	if len(inLastName) == 0 {
+		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid last name", "code": 401})
+		return
+	}
+
+	if len(inEmail) == 0 || !strings.Contains(inEmail, "@") {
+		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid email address", "code": 401})
+		return
+	}
 
 	// Check if a user exists with the passed username or email
 	row := db.QueryRow("select * from users where username=? or email=?", inUsername, inEmail)
