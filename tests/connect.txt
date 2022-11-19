@@ -4,3 +4,10 @@ Connexion:
     Refus si champ password vide: OK
     Refus si champ mot de passe incorrect: OK
     Refus si champ username inconnu: OK
+
+New-team:
+    Création de team classique: OK
+    Refus si champ nom de team vide: OK
+    Refus si champ jeu est vide: OK
+    Refus si champ créateur est vide: OK
+    Refus si une autre team de ce nom existe: OK
