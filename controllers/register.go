@@ -13,6 +13,15 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+
+type CreateUserDTO struct {
+	Username string `json:"username"`
+	Password  string `json:"password"`
+	FirstName  string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email  string `json:"email"`
+}
+
 func Register(c *gin.Context) {
 	// Open the database
 	db, _ := sql.Open("sqlite3", "./bdd.db")
@@ -20,12 +29,18 @@ func Register(c *gin.Context) {
 
 	// TODO: Accept in input username, password, first_name, last_name, email, email_verified_at
 	// Also use bcrypt
+	var req CreateUserDTO
 
-	inUsername := c.PostForm("username")
-	inPassword := c.PostForm("password")
-	inFirstName := c.PostForm("first_name")
-	inLastName := c.PostForm("last_name")
-	inEmail := c.PostForm("email")
+    if err := c.BindJSON(&req); err != nil {
+        c.JSON(http.StatusForbidden, gin.H{"message": "Expected JSON format", "code": 403})
+        return
+    }
+
+	inUsername := req.Username
+	inPassword := req.Password
+	inFirstName := req.FirstName
+	inLastName := req.LastName
+	inEmail := req.Email
 
 	if len(inUsername) == 0 {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid username", "code": 401})

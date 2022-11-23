@@ -12,14 +12,28 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+type CreateTournamentDTO struct {
+	Name string `json:"name"`
+	Game  string `json:"game"`
+	Price  string `json:"price"`
+	NbrTeams  string `json:"nbr_teams"`
+}
+
 func NewTournament(c *gin.Context) {
 	// Open the database
 	db, _ := sql.Open("sqlite3", "./bdd.db")
 
-	tournamentName := c.PostForm("name")
-	tournamentGame := c.PostForm("game")
-	tournamentPrice := c.PostForm("price")
-	tournamentTeamCount := c.PostForm("nbr_teams")
+
+	var req CreateTournamentDTO
+
+    if err := c.BindJSON(&req); err != nil {
+        c.JSON(http.StatusForbidden, gin.H{"message": "Expected JSON format", "code": 403})
+        return
+    }
+	tournamentName := req.Name
+	tournamentGame := req.Game
+	tournamentPrice := req.Price
+	tournamentTeamCount := req.NbrTeams
 	teamCount, _ := strconv.Atoi(tournamentTeamCount)
 	parsedPrice, err := strconv.Atoi(tournamentPrice)
 	if err != nil {
