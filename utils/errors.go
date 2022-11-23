@@ -55,12 +55,37 @@ var TournamentWithSameNameUnfinishedError = Error{
 	Message: "A tournament with the same name already exists and isn't finished",
 }
 
-var InvalidTeamSize = Error{
+var InvalidTeamSizeError = Error{
 	Code:    "ERR12",
 	Message: "The team size is invalid",
 }
 
-var InvalidPartyMode = Error{
+var InvalidPartyModeError = Error{
 	Code:    "ERR13",
 	Message: "Invalid party mode (Fortnite)",
+}
+
+var PasswordTooShortError = Error{
+	Code:    "ERR14",
+	Message: "Password is too short",
+}
+
+var InvalidFirstNameError = Error{
+	Code:    "ERR15",
+	Message: "Invalid first name",
+}
+
+var InvalidLastNameError = Error{
+	Code:    "ERR16",
+	Message: "Invalid last name",
+}
+
+var InvalidEmailError = Error{
+	Code:    "ERR17",
+	Message: "Invalid email address",
+}
+
+var AccountAlreadyExistError = Error{
+	Code:    "ERR18",
+	Message: "An account with the same username or email has already been created",
 }

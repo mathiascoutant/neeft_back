@@ -75,7 +75,7 @@ func NewTournament(c *gin.Context) {
 
 	if tournamentGame == "Lol" {
 		if tournamentTeamCount%2 != 0 {
-			utils.SendError(c, 401, utils.InvalidTeamSize)
+			utils.SendError(c, 401, utils.InvalidTeamSizeError)
 			return
 		} else {
 			// Insert an element in a table
@@ -99,7 +99,7 @@ func NewTournament(c *gin.Context) {
 		tournamentMode := req.Mode
 
 		if tournamentMode != "solo" && tournamentMode != "duo" && tournamentMode != "trio" && tournamentMode != "squad" {
-			utils.SendError(c, 401, utils.InvalidPartyMode)
+			utils.SendError(c, 401, utils.InvalidPartyModeError)
 			return
 		}
 
