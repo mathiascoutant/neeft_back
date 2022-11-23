@@ -28,6 +28,27 @@ func NewTournament(c *gin.Context) {
 		return
 	}
 
+	// Check if the tournament name isn't empty
+	if len(tournamentName) <= 0 {
+		c.JSON(http.StatusForbidden, gin.H{"message": "Tournament name is empty", "code": 401})
+		db.Close()
+		return
+	}
+
+	// Check if the tournament price is higher than 0
+	if parsedPrice <= 0 {
+		c.JSON(http.StatusForbidden, gin.H{"message": "Tournament price cannot be 0", "code": 401})
+		db.Close()
+		return
+	}
+
+	// Check if the number of team is equals or higher than 2
+	if teamCount < 2 {
+		c.JSON(http.StatusForbidden, gin.H{"message": "You must have 2 teams at least", "code": 401})
+		db.Close()
+		return
+	}
+
 	// Check if the tournament already exists
 	row := db.QueryRow("select * from tournaments where name=? and game=?", tournamentName, tournamentGame)
 	tournament := new(models.Tournament)
@@ -39,7 +60,11 @@ func NewTournament(c *gin.Context) {
 	}
 
 	if tournamentGame == "Lol" {
-		if teamCount%2 == 0 {
+		if (teamCount%2 != 0) {
+			c.JSON(http.StatusForbidden, gin.H{"message": "team size must be divisible by 2", "code": 401})
+			db.Close()
+			return
+		} else {
 			// Insert an element in a table
 			query := "INSERT INTO tournaments(name, count, price, game, nbr_teams, end, mode) VALUES (?, ?, ?, ?, ?, ?, ?)"
 			ctx, cancelFunction := context.WithTimeout(context.Background(), 5*time.Second)

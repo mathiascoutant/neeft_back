@@ -1,11 +1,11 @@
 New-tournament:
     Création de tournoi classique: OK
-    Refus si nom de tournoi vide: NON (Success)
-    Refus si prix inférieur ou égal à 0: NON (Success)
-    Refus si nombre de teams inférieur à 2: NON (Success)
+    Refus si nom de tournoi vide: OK 
+    Refus si prix inférieur ou égal à 0: OK
+    Refus si nombre de teams inférieur à 2: OK
     Refus si la team existe déjà avec un nom identique: OK
     Accepte de créer la team si l'ancienne team du même nom est finie: OK (Créé une team quand même si on réessaye car il voit que la première team)
     Pour LOL:
-        Créé la team uniquement si la taille de la team est divisible par 2: ERREUR (sql: no rows in result set)
+        Créé la team uniquement si la taille de la team est divisible par 2: OK
     Pour Fortnite:
         Refuse si le mode de team est incorrect (n'est pas solo, duo, trio, squad): OK
