@@ -10,18 +10,15 @@ func main() {
 
 	r := gin.Default()
 
-	// CORS part : we allow everyone
-	r.Use(func() gin.HandlerFunc {
-		return func(c *gin.Context) {
-			c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		}
-	}(),
-	)
-
 	r.GET("/", controllers.Accueil)
 	r.POST("/connect", controllers.Connect)
 	r.POST("/new_team", controllers.NewTeam)
 	r.POST("/new_tournament", controllers.NewTournament)
+
+	// CORS OPTIONS requests
+	r.OPTIONS("/connect", controllers.ConnectOptions)
+	r.OPTIONS("/new_team", controllers.NewTeamOptions)
+	r.OPTIONS("/new_tournament", controllers.NewTournament)
 
 	r.Run()
 }

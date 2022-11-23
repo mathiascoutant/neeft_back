@@ -11,8 +11,12 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func Connect(c *gin.Context) {
+func ConnectOptions(c *gin.Context) {
 	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+}
+
+func Connect(c *gin.Context) {
 
 	// Open the database
 	db, _ := sql.Open("sqlite3", "./bdd.db")

@@ -12,6 +12,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+func NewTeamOptions(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 func NewTeam(c *gin.Context) {
 	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
 
