@@ -14,6 +14,7 @@ import (
 func ConnectOptions(c *gin.Context) {
 	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Request-Headers", "Content-Type")
 }
 
 func Connect(c *gin.Context) {

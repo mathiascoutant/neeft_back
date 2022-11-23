@@ -15,6 +15,7 @@ import (
 func NewTeamOptions(c *gin.Context) {
 	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Request-Headers", "Content-Type")
 }
 
 func NewTeam(c *gin.Context) {
