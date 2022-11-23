@@ -2,11 +2,10 @@ package controllers
 
 import (
 	"database/sql"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"neeft_back/models"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"neeft_back/utils"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -31,7 +30,7 @@ func Connect(c *gin.Context) {
 	var req ConnectRequestBody
 
 	if err := c.BindJSON(&req); err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Expected JSON format", "code": 403})
+		utils.SendError(c, 401, utils.InvalidRequestFormat)
 		return
 	}
 
@@ -39,10 +38,10 @@ func Connect(c *gin.Context) {
 	inPassword := req.Password
 
 	if len(inUsername) == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Please enter a valid username", "code": 403})
+		utils.SendError(c, 401, utils.UsernameEmptyError)
 		return
 	} else if len(inPassword) == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Please enter a non-null password", "code": 403})
+		utils.SendError(c, 401, utils.PasswordEmptyError)
 		return
 	}
 
@@ -60,9 +59,9 @@ func Connect(c *gin.Context) {
 		&user.EmailVerifiedAt)
 
 	if err != nil || bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(inPassword)) != nil {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Username or password is invalid", "code": 401})
+		utils.SendError(c, 401, utils.UsernameOrPasswordInvalidError)
 		return
 	} else {
-		c.JSON(http.StatusOK, gin.H{"username": inUsername, "id": user.Id, "code": 200})
+		utils.SendOK(c, gin.H{"username": inUsername, "id": user.Id})
 	}
 }
