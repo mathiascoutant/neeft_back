@@ -6,20 +6,25 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"neeft_back/models"
-	"net/http"
+	"neeft_back/utils"
 	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
+func RegisterOptions(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+}
 
 type CreateUserDTO struct {
-	Username string `json:"username"`
+	Username  string `json:"username"`
 	Password  string `json:"password"`
-	FirstName  string `json:"first_name"`
+	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
-	Email  string `json:"email"`
+	Email     string `json:"email"`
 }
 
 func Register(c *gin.Context) {
@@ -27,14 +32,14 @@ func Register(c *gin.Context) {
 	db, _ := sql.Open("sqlite3", "./bdd.db")
 	defer db.Close()
 
-	// TODO: Accept in input username, password, first_name, last_name, email, email_verified_at
+	// Accept in input username, password, first_name, last_name, email, email_verified_at
 	// Also use bcrypt
 	var req CreateUserDTO
 
-    if err := c.BindJSON(&req); err != nil {
-        c.JSON(http.StatusForbidden, gin.H{"message": "Expected JSON format", "code": 403})
-        return
-    }
+	if err := c.BindJSON(&req); err != nil {
+		utils.SendError(c, 401, utils.InvalidRequestFormat)
+		return
+	}
 
 	inUsername := req.Username
 	inPassword := req.Password
@@ -43,27 +48,27 @@ func Register(c *gin.Context) {
 	inEmail := req.Email
 
 	if len(inUsername) == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid username", "code": 401})
+		utils.SendError(c, 401, utils.UsernameEmptyError)
 		return
 	}
 
 	if len(inPassword) < 4 {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid password or password length too short (must be more than 4 characters long)", "code": 401})
+		utils.SendError(c, 401, utils.PasswordTooShortError)
 		return
 	}
 
 	if len(inFirstName) == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid first name", "code": 401})
+		utils.SendError(c, 401, utils.InvalidFirstNameError)
 		return
 	}
 
 	if len(inLastName) == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid last name", "code": 401})
+		utils.SendError(c, 401, utils.InvalidLastNameError)
 		return
 	}
 
 	if len(inEmail) == 0 || !strings.Contains(inEmail, "@") {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid email address", "code": 401})
+		utils.SendError(c, 401, utils.InvalidEmailError)
 		return
 	}
 
@@ -80,7 +85,7 @@ func Register(c *gin.Context) {
 		&user.EmailVerifiedAt)
 
 	if err == nil || user.Username == inUsername || user.Email == inEmail {
-		c.JSON(http.StatusForbidden, gin.H{"message": "An account with the same username or email has already been created", "code": 401})
+		utils.SendError(c, 401, utils.AccountAlreadyExistError)
 		return
 	}
 
@@ -92,8 +97,7 @@ func Register(c *gin.Context) {
 
 	stmt, err := db.PrepareContext(ctx, query)
 	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Database can't be accessed", "error": err.Error(), "code": 401})
-		db.Close()
+		utils.SendError(c, 401, utils.DatabaseError)
 		return
 	}
 	defer stmt.Close()
@@ -108,10 +112,9 @@ func Register(c *gin.Context) {
 		0)
 
 	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Unknown error occurred", "error": err.Error(), "code": 401})
-		db.Close()
+		utils.SendError(c, 401, utils.DatabaseError)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Success", "code": 200})
+	utils.SendOK(c, gin.H{})
 }

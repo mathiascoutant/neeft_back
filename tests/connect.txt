@@ -1,6 +1,6 @@
 Connexion:
-    Connexion classique: OK
-    Refus si champ username vide: OK
-    Refus si champ password vide: OK
-    Refus si champ mot de passe incorrect: OK
-    Refus si champ username inconnu: OK
+    Connexion classique: OK+
+    Refus si champ username vide: OK+
+    Refus si champ password vide: OK+
+    Refus si champ mot de passe incorrect: OK+
+    Refus si champ username inconnu: OK+

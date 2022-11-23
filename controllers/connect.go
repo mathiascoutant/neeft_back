@@ -2,40 +2,46 @@ package controllers
 
 import (
 	"database/sql"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"neeft_back/models"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"neeft_back/utils"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type ConnectionDTO struct {
+type ConnectRequestBody struct {
 	Username string `json:"username"`
-	Password  string `json:"password"`
+	Password string `json:"password"`
+}
+
+func ConnectOptions(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
 func Connect(c *gin.Context) {
+	ConnectOptions(c)
 	// Open the database
 	db, _ := sql.Open("sqlite3", "./bdd.db")
 	defer db.Close()
 
-	var req ConnectionDTO
+	var req ConnectRequestBody
 
-    if err := c.BindJSON(&req); err != nil {
-        c.JSON(http.StatusForbidden, gin.H{"message": "Expected JSON format", "code": 403})
-        return
-    }
+	if err := c.BindJSON(&req); err != nil {
+		utils.SendError(c, 401, utils.InvalidRequestFormat)
+		return
+	}
 
-    inUsername := req.Username
-    inPassword := req.Password
+	inUsername := req.Username
+	inPassword := req.Password
 
 	if len(inUsername) == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Please enter a valid username", "code": 403})
+		utils.SendError(c, 401, utils.UsernameEmptyError)
 		return
 	} else if len(inPassword) == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Please enter a non-null password", "code": 403})
+		utils.SendError(c, 401, utils.PasswordEmptyError)
 		return
 	}
 
@@ -53,9 +59,9 @@ func Connect(c *gin.Context) {
 		&user.EmailVerifiedAt)
 
 	if err != nil || bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(inPassword)) != nil {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Username or password is invalid", "code": 401})
+		utils.SendError(c, 401, utils.UsernameOrPasswordInvalidError)
 		return
 	} else {
-		c.JSON(http.StatusOK, gin.H{"username": inUsername, "id": user.Id, "code": 200})
+		utils.SendOK(c, gin.H{"username": inUsername, "id": user.Id})
 	}
 }

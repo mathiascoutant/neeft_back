@@ -5,38 +5,45 @@ import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
 	"neeft_back/models"
-	"net/http"
+	"neeft_back/utils"
 	"strconv"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
+func NewTeamOptions(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+}
+
 type CreateTeamDTO struct {
-	Name string `json:"name"`
-	Game  string `json:"game"`
-	Creator  string `json:"creator"`
+	Name    string `json:"name"`
+	Game    string `json:"game"`
+	Creator string `json:"creator"`
 }
 
 func NewTeam(c *gin.Context) {
+	NewTeamOptions(c)
+
 	// Open the database
 	db, _ := sql.Open("sqlite3", "./bdd.db")
-
+	defer db.Close()
 
 	var req CreateTeamDTO
 
-    if err := c.BindJSON(&req); err != nil {
-        c.JSON(http.StatusForbidden, gin.H{"message": "Expected JSON format", "code": 403})
-        return
-    }
+	if err := c.BindJSON(&req); err != nil {
+		utils.SendError(c, 401, utils.InvalidRequestFormat)
+		return
+	}
 
 	teamName := req.Name
 	teamGame := req.Game
 	teamCreator := req.Creator
 
 	if len(teamName) == 0 || len(teamGame) == 0 || len(teamCreator) == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid informations provided", "code": 401})
-		db.Close()
+		utils.SendError(c, 401, utils.InvalidInfosProvidedError)
 		return
 	}
 
@@ -45,8 +52,7 @@ func NewTeam(c *gin.Context) {
 	team := new(models.Team)
 	err := row.Scan(&team.Id, &team.Name, &team.Count, &team.GameName, &team.NbrTournoi, &team.CreatorName, &team.CreationDate)
 	if err == nil && team.Name == teamName {
-		c.JSON(http.StatusForbidden, gin.H{"message": "A team with the same name already exists", "code": 401})
-		db.Close()
+		utils.SendError(c, 401, utils.TeamWithSameNameExistsError)
 		return
 	}
 
@@ -56,8 +62,7 @@ func NewTeam(c *gin.Context) {
 	defer cancelfunc()
 	stmt, err := db.PrepareContext(ctx, query)
 	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Database can't be accessed", "error": err.Error(), "code": 401})
-		db.Close()
+		utils.SendError(c, 401, utils.DatabaseError)
 		return
 	}
 	defer stmt.Close()
@@ -66,12 +71,9 @@ func NewTeam(c *gin.Context) {
 
 	_, err = stmt.ExecContext(ctx, teamName, 1, teamGame, 0, teamCreator, strconv.Itoa(curTime.Day())+"/"+strconv.Itoa(int(curTime.Month()))+"/"+strconv.Itoa(curTime.Year()))
 	if err != nil {
-		c.JSON(http.StatusForbidden, gin.H{"message": "Failed", "error": err.Error(), "code": 401})
-		db.Close()
+		utils.SendError(c, 401, utils.DatabaseError)
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "Success", "team_name": teamName, "team_game": teamGame, "code": 200})
-
-	db.Close()
+	utils.SendOK(c, gin.H{"message": "Success", "team_name": teamName, "team_game": teamGame})
 }
