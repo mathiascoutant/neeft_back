@@ -18,7 +18,7 @@ func ConnectOptions(c *gin.Context) {
 }
 
 func Connect(c *gin.Context) {
-
+	ConnectOptions(c)
 	// Open the database
 	db, _ := sql.Open("sqlite3", "./bdd.db")
 	defer db.Close()
