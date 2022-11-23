@@ -13,6 +13,8 @@ import (
 )
 
 func NewTeam(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
+
 	// Open the database
 	db, _ := sql.Open("sqlite3", "./bdd.db")
 

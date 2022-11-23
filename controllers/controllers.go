@@ -23,6 +23,7 @@ func InitDatabase() {
 }
 
 func Accueil(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "GET")
 	c.JSON(http.StatusOK, gin.H{"data": Library})
 }
 
