@@ -11,6 +11,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+type ConnectRequestBody struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 func ConnectOptions(c *gin.Context) {
 	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -23,8 +28,15 @@ func Connect(c *gin.Context) {
 	db, _ := sql.Open("sqlite3", "./bdd.db")
 	defer db.Close()
 
-	inUsername := c.PostForm("username")
-	inPassword := c.PostForm("password")
+	var req ConnectRequestBody
+
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"message": "Expected JSON format", "code": 403})
+		return
+	}
+
+	inUsername := req.Username
+	inPassword := req.Password
 
 	if len(inUsername) == 0 {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Please enter a valid username", "code": 403})
