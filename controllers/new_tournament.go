@@ -15,7 +15,7 @@ import (
 func NewTournamentOptions(c *gin.Context) {
 	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Request-Headers", "Content-Type")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
 func NewTournament(c *gin.Context) {
