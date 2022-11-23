@@ -43,7 +43,7 @@ func NewTeam(c *gin.Context) {
 	teamCreator := req.Creator
 
 	if len(teamName) == 0 || len(teamGame) == 0 || len(teamCreator) == 0 {
-		utils.SendError(c, 401, utils.InvalidInfosProvided)
+		utils.SendError(c, 401, utils.InvalidInfosProvidedError)
 		return
 	}
 

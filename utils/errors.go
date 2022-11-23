@@ -25,7 +25,7 @@ var TeamWithSameNameExistsError = Error{
 	Message: "A team with the same name already exist",
 }
 
-var InvalidInfosProvided = Error{
+var InvalidInfosProvidedError = Error{
 	Code:    "ERR06",
 	Message: "Invalid informations provided",
 }
@@ -33,4 +33,34 @@ var InvalidInfosProvided = Error{
 var DatabaseError = Error{
 	Code:    "ERR07",
 	Message: "Database Error",
+}
+
+var InvalidPriceError = Error{
+	Code:    "ERR08",
+	Message: "Invalid price",
+}
+
+var TournamentNameEmptyError = Error{
+	Code:    "ERR09",
+	Message: "Tournament name is empty",
+}
+
+var AtLeastTwoTeamsError = Error{
+	Code:    "ERR10",
+	Message: "You must have 2 teams at least",
+}
+
+var TournamentWithSameNameUnfinishedError = Error{
+	Code:    "ERR11",
+	Message: "A tournament with the same name already exists and isn't finished",
+}
+
+var InvalidTeamSize = Error{
+	Code:    "ERR12",
+	Message: "The team size is invalid",
+}
+
+var InvalidPartyMode = Error{
+	Code:    "ERR13",
+	Message: "Invalid party mode (Fortnite)",
 }
