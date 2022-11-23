@@ -13,6 +13,7 @@ func main() {
 
 	r.GET("/", controllers.Accueil)
 	r.POST("/connect", controllers.Connect)
+	r.POST("/register", controllers.Register)
 	r.POST("/new_team", controllers.NewTeam)
 	r.POST("/new_tournament", controllers.NewTournament)
 
