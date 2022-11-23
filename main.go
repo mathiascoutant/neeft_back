@@ -10,6 +10,7 @@ func main() {
 
 	r := gin.Default()
 
+	// CORS part : we allow everyone
 	r.Use(func() gin.HandlerFunc {
 		return func(c *gin.Context) {
 			c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
