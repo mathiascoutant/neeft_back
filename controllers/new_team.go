@@ -1,9 +1,8 @@
 package controllers
 
 import (
-	"context"
-	"database/sql"
 	"github.com/gin-gonic/gin"
+	db2 "neeft_back/db"
 	"neeft_back/models"
 	"neeft_back/utils"
 	"strconv"
@@ -27,10 +26,6 @@ type CreateTeamDTO struct {
 func NewTeam(c *gin.Context) {
 	NewTeamOptions(c)
 
-	// Open the database
-	db, _ := sql.Open("sqlite3", "./bdd.db")
-	defer db.Close()
-
 	var req CreateTeamDTO
 
 	if err := c.BindJSON(&req); err != nil {
@@ -48,32 +43,29 @@ func NewTeam(c *gin.Context) {
 	}
 
 	// Check if the team already exists
-	row := db.QueryRow("select * from teams where team_name=?", teamName)
-	team := new(models.Team)
-	err := row.Scan(&team.Id, &team.Name, &team.Count, &team.GameName, &team.NbrTournoi, &team.CreatorName, &team.CreationDate)
+
+	team, err := db2.FetchTeam(teamName)
 	if err == nil && team.Name == teamName {
 		utils.SendError(c, 401, utils.TeamWithSameNameExistsError)
 		return
 	}
 
-	// Insert an element in a table
-	query := "INSERT INTO teams(team_name, count, game, nbr_tournoi, name_creator, date_creator) VALUES (?, ?, ?, ?, ?, ?)"
-	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancelfunc()
-	stmt, err := db.PrepareContext(ctx, query)
-	if err != nil {
-		utils.SendError(c, 401, utils.DatabaseError)
-		return
-	}
-	defer stmt.Close()
-
 	curTime := time.Now()
+	dateString := strconv.Itoa(curTime.Day()) + "/" + strconv.Itoa(int(curTime.Month())) + "/" + strconv.Itoa(curTime.Year())
 
-	_, err = stmt.ExecContext(ctx, teamName, 1, teamGame, 0, teamCreator, strconv.Itoa(curTime.Day())+"/"+strconv.Itoa(int(curTime.Month()))+"/"+strconv.Itoa(curTime.Year()))
+	err = db2.RegisterTeam(models.Team{
+		Name:            teamName,
+		UserCount:       1,
+		GameName:        teamGame,
+		TournamentCount: 0,
+		CreatorName:     teamCreator,
+		CreationDate:    dateString,
+	})
+
 	if err != nil {
-		utils.SendError(c, 401, utils.DatabaseError)
+		utils.SendError(c, 401, utils.InternalError)
 		return
 	}
 
-	utils.SendOK(c, gin.H{"message": "Success", "team_name": teamName, "team_game": teamGame})
+	utils.SendOK(c, gin.H{"message": "Success", "team": team})
 }

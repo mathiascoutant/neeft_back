@@ -7,32 +7,34 @@ type Accueil struct {
 }
 
 type User struct {
-	Id              int    `json:"id"`
-	Username        string `json:"username"`
-	Password        string `json:"password"`
-	FirstName       string `json:"first_name"`
-	LastName        string `json:"last_name"`
-	Email           string `json:"email"`
-	EmailVerifiedAt int    `json:"email_verified_at"`
+	Id                    int    `json:"id"`
+	Username              string `json:"username"`
+	Password              string `json:"password"`
+	FirstName             string `json:"firstName"`
+	LastName              string `json:"lastName"`
+	Email                 string `json:"email"`
+	EmailVerificationDate int    `json:"emailVerificationDate"`
 }
 
 type Team struct {
-	Id           int    `json:"id"`
-	Name         string `json:"team_name"`
-	Count        int    `json:"count"`
-	GameName     string `json:"game"`
-	NbrTournoi   int    `json:"nbr_tournoi"`
-	CreatorName  string `json:"name_creator"`
-	CreationDate string `json:"date_creator"`
+	Id              int    `json:"id"`
+	Name            string `json:"teamName"`
+	UserCount       int    `json:"userCount"`
+	GameName        string `json:"game"`
+	TournamentCount int    `json:"tournamentCount"`
+	CreatorName     string `json:"creatorName"`
+	CreationDate    string `json:"creationDate"`
 }
 
 type Tournament struct {
 	Id         int    `json:"id"`
-	Name       string `json:"tournament_name"`
+	Name       string `json:"tournamentName"`
 	Count      int    `json:"count"`
 	Price      int    `json:"price"`
 	Game       string `json:"game"`
-	TeamsCount int    `json:"nbr_teams"`
-	IsFinished int    `json:"end"`
+	TeamsCount int    `json:"teamCount"`
+	IsFinished int    `json:"isFinished"`
 	Mode       string `json:"mode"`
+	BeginDate  string `json:"beginDate"`
+	BeginTime  string `json:"beginTime"`
 }

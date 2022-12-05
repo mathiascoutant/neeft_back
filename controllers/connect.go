@@ -1,10 +1,9 @@
 package controllers
 
 import (
-	"database/sql"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"neeft_back/models"
+	"neeft_back/db"
 	"neeft_back/utils"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -23,9 +22,6 @@ func ConnectOptions(c *gin.Context) {
 
 func Connect(c *gin.Context) {
 	ConnectOptions(c)
-	// Open the database
-	db, _ := sql.Open("sqlite3", "./bdd.db")
-	defer db.Close()
 
 	var req ConnectRequestBody
 
@@ -45,23 +41,12 @@ func Connect(c *gin.Context) {
 		return
 	}
 
-	row := db.QueryRow("select * from users where username=?", inUsername)
+	registerUser, err := db.FetchUser(inUsername)
 
-	user := new(models.User)
-	hashedPassword := ""
-
-	err := row.Scan(&user.Id,
-		&user.Username,
-		&hashedPassword,
-		&user.FirstName,
-		&user.LastName,
-		&user.Email,
-		&user.EmailVerifiedAt)
-
-	if err != nil || bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(inPassword)) != nil {
+	if err != nil || bcrypt.CompareHashAndPassword([]byte(registerUser.Password), []byte(inPassword)) != nil {
 		utils.SendError(c, 401, utils.UsernameOrPasswordInvalidError)
 		return
 	} else {
-		utils.SendOK(c, gin.H{"username": inUsername, "id": user.Id})
+		utils.SendOK(c, gin.H{"message": "Success", "userId": registerUser.Id})
 	}
 }

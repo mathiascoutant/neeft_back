@@ -1,16 +1,14 @@
 package controllers
 
 import (
-	"context"
 	"database/sql"
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
+	_ "github.com/mattn/go-sqlite3"
+	db2 "neeft_back/db"
 	"neeft_back/models"
 	"neeft_back/utils"
 	"strings"
-	"time"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func RegisterOptions(c *gin.Context) {
@@ -22,8 +20,8 @@ func RegisterOptions(c *gin.Context) {
 type CreateUserDTO struct {
 	Username  string `json:"username"`
 	Password  string `json:"password"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
 }
 
@@ -82,39 +80,28 @@ func Register(c *gin.Context) {
 		&user.FirstName,
 		&user.LastName,
 		&user.Email,
-		&user.EmailVerifiedAt)
+		&user.EmailVerificationDate)
 
 	if err == nil || user.Username == inUsername || user.Email == inEmail {
 		utils.SendError(c, 401, utils.AccountAlreadyExistError)
 		return
 	}
 
-	// Insert the user into the table
-	query := "INSERT INTO users(username, password, first_name, last_name, email, email_verified_at) VALUES (?, ?, ?, ?, ?, ?)"
-
-	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancelfunc()
-
-	stmt, err := db.PrepareContext(ctx, query)
-	if err != nil {
-		utils.SendError(c, 401, utils.DatabaseError)
-		return
+	toRegisterUser := models.User{
+		Username:              inUsername,
+		Password:              inPassword,
+		FirstName:             inFirstName,
+		LastName:              inLastName,
+		Email:                 inEmail,
+		EmailVerificationDate: 0,
 	}
-	defer stmt.Close()
-
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(inPassword), 10)
-	_, err = stmt.ExecContext(ctx,
-		inUsername,
-		string(hashedPassword),
-		inFirstName,
-		inLastName,
-		inEmail,
-		0)
+	err = db2.RegisterUser(toRegisterUser)
 
 	if err != nil {
-		utils.SendError(c, 401, utils.DatabaseError)
+		fmt.Println("RegisterUser: " + err.Error())
+		utils.SendError(c, 401, utils.InternalError)
 		return
 	}
 
-	utils.SendOK(c, gin.H{})
+	utils.SendOK(c, gin.H{"message": "success", "userId": toRegisterUser.Id})
 }

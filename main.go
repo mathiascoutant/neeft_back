@@ -10,17 +10,7 @@ func main() {
 
 	r := gin.Default()
 
-	r.GET("/", controllers.Accueil)
-	r.POST("/connect", controllers.Connect)
-	r.POST("/new_team", controllers.NewTeam)
-	r.POST("/new_tournament", controllers.NewTournament)
-	r.POST("/register", controllers.Register)
-
-	// CORS OPTIONS requests
-	r.OPTIONS("/connect", controllers.ConnectOptions)
-	r.OPTIONS("/new_team", controllers.NewTeamOptions)
-	r.OPTIONS("/new_tournament", controllers.NewTournament)
-	r.OPTIONS("/register", controllers.RegisterOptions)
+	setupRoutes(r)
 
 	r.Run()
 }
