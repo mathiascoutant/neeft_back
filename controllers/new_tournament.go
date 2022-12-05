@@ -1,15 +1,12 @@
 package controllers
 
 import (
-	"context"
-	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/mattn/go-sqlite3"
+	"neeft_back/db"
 	"neeft_back/models"
 	"neeft_back/utils"
-	"time"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func NewTournamentOptions(c *gin.Context) {
@@ -19,19 +16,17 @@ func NewTournamentOptions(c *gin.Context) {
 }
 
 type CreateTournamentDTO struct {
-	Name     string `json:"name"`
-	Game     string `json:"game"`
-	Mode     string `json:"mode"`
-	Price    int    `json:"price"`
-	NbrTeams int    `json:"nbr_teams"`
+	Name      string `json:"name"`
+	Game      string `json:"game"`
+	Mode      string `json:"mode"`
+	Price     int    `json:"price"`
+	TeamCount int    `json:"teamCount"`
+	BeginTime string `json:"beginTime"`
+	BeginDate string `json:"beginDate"`
 }
 
 func NewTournament(c *gin.Context) {
 	NewTournamentOptions(c)
-
-	// Open the database
-	db, _ := sql.Open("sqlite3", "./bdd.db")
-	defer db.Close()
 
 	var req CreateTournamentDTO
 
@@ -44,7 +39,9 @@ func NewTournament(c *gin.Context) {
 	tournamentName := req.Name
 	tournamentGame := req.Game
 	tournamentPrice := req.Price
-	tournamentTeamCount := req.NbrTeams
+	tournamentTeamCount := req.TeamCount
+	tournamentBeginTime := req.BeginTime
+	tournamentBeginDate := req.BeginDate
 
 	// Check if the tournament name isn't empty
 	if len(tournamentName) <= 0 {
@@ -64,71 +61,60 @@ func NewTournament(c *gin.Context) {
 		return
 	}
 
-	// Check if the tournament already exists
-	row := db.QueryRow("select * from tournaments where name=? and game=?", tournamentName, tournamentGame)
-	tournament := new(models.Tournament)
-	err := row.Scan(&tournament.Id, &tournament.Name, &tournament.Count, &tournament.Price, &tournament.Game, &tournament.TeamsCount, &tournament.IsFinished, &tournament.Mode)
+	// Check if the begin & end time aren't null
+	if len(tournamentBeginDate) <= 0 || len(tournamentBeginTime) <= 0 {
+		utils.SendError(c, 401, utils.InvalidDateTimeError)
+		return
+	}
+
+	tournament, err := db.FetchTournament(tournamentName, tournamentGame)
 	if err == nil && tournament.Name == tournamentName && tournament.IsFinished == 0 {
 		utils.SendError(c, 401, utils.TournamentWithSameNameUnfinishedError)
 		return
 	}
 
+	tournamentMode := "none"
+
 	if tournamentGame == "Lol" {
 		if tournamentTeamCount%2 != 0 {
 			utils.SendError(c, 401, utils.InvalidTeamSizeError)
 			return
-		} else {
-			// Insert an element in a table
-			query := "INSERT INTO tournaments(name, count, price, game, nbr_teams, end, mode) VALUES (?, ?, ?, ?, ?, ?, ?)"
-			ctx, cancelFunction := context.WithTimeout(context.Background(), 5*time.Second)
-			defer cancelFunction()
-			stmt, err := db.PrepareContext(ctx, query)
-			if err != nil {
-				utils.SendError(c, 401, utils.DatabaseError)
-				return
-			}
-			defer stmt.Close()
-
-			_, err = stmt.ExecContext(ctx, tournamentName, 1, tournamentPrice, tournamentGame, 0, false, "unsupported")
-			if err != nil {
-				utils.SendError(c, 401, utils.DatabaseError)
-				return
-			}
 		}
 	} else if tournamentGame == "Fortnite" {
-		tournamentMode := req.Mode
+		tournamentMode = req.Mode
 
 		if tournamentMode != "solo" && tournamentMode != "duo" && tournamentMode != "trio" && tournamentMode != "squad" {
 			utils.SendError(c, 401, utils.InvalidPartyModeError)
 			return
 		}
-
-		// Insert an element in a table
-		query := "INSERT INTO tournaments(name, count, price, game, nbr_teams, end, mode) VALUES (?, ?, ?, ?, ?, ?, ?)"
-		ctx, cancelFunction := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancelFunction()
-		stmt, err := db.PrepareContext(ctx, query)
-		if err != nil {
-			utils.SendError(c, 401, utils.DatabaseError)
-			return
-		}
-		defer stmt.Close()
-
-		_, err = stmt.ExecContext(ctx, tournamentName, 1, tournamentPrice, tournamentGame, 0, false, tournamentMode)
-		if err != nil {
-			utils.SendError(c, 401, utils.DatabaseError)
-			return
-		}
 	}
 
-	// Get the tournament's infos
-	getIdRow := db.QueryRow("select * from tournaments where name=? and game=? order by id desc", tournamentName, tournamentGame)
-	tournament = new(models.Tournament)
-	err = getIdRow.Scan(&tournament.Id, &tournament.Name, &tournament.Count, &tournament.Price, &tournament.Game, &tournament.TeamsCount, &tournament.IsFinished, &tournament.Mode)
+	// Insert an element in the database
+	err = db.RegisterTournament(models.Tournament{
+		Name:       tournamentName,
+		Count:      1,
+		Price:      tournamentPrice,
+		Game:       tournamentGame,
+		TeamsCount: 0,
+		IsFinished: 0,
+		Mode:       tournamentMode,
+		BeginDate:  tournamentBeginDate,
+		BeginTime:  tournamentBeginTime,
+	})
+
 	if err != nil {
-		utils.SendError(c, 401, utils.DatabaseError)
+		fmt.Println("RegisterTournament: " + err.Error())
+		utils.SendError(c, 401, utils.InternalError)
 		return
 	}
 
-	utils.SendOK(c, gin.H{"message": "Success", "tournament_id": tournament.Id})
+	// Check if the tournament exists
+	tournament, err = db.FetchTournament(tournamentName, tournamentGame)
+	if err != nil {
+		fmt.Println("FetchTournament: " + err.Error())
+		utils.SendError(c, 401, utils.InternalError)
+		return
+	}
+
+	utils.SendOK(c, gin.H{"message": "Success", "tournament": tournament})
 }

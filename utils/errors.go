@@ -30,9 +30,9 @@ var InvalidInfosProvidedError = Error{
 	Message: "Invalid informations provided",
 }
 
-var DatabaseError = Error{
+var InternalError = Error{
 	Code:    "ERR07",
-	Message: "Database Error",
+	Message: "Internal Error",
 }
 
 var InvalidPriceError = Error{
@@ -88,4 +88,9 @@ var InvalidEmailError = Error{
 var AccountAlreadyExistError = Error{
 	Code:    "ERR18",
 	Message: "An account with the same username or email has already been created",
+}
+
+var InvalidDateTimeError = Error{
+	Code:    "ERR19",
+	Message: "Invalid date or time value",
 }
