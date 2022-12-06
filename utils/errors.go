@@ -94,3 +94,8 @@ var InvalidDateTimeError = Error{
 	Code:    "ERR19",
 	Message: "Invalid date or time value",
 }
+
+var TournamentDoesNotExistError = Error{
+	Code:    "ERR20",
+	Message: "Provided tournament does not exist",
+}
