@@ -36,5 +36,6 @@ func SetupRouters(app *fiber.App) {
 	api.Get("/tournaments", tournament.GetAllTournament)
 	api.Get("/tournament/:id", tournament.GetTournament)
 	api.Delete("/tournament/:id", tournament.DeleteTournament)
+	api.Get("/tournament/:id/request", tournament.SendPendingRequest)
 
 }
