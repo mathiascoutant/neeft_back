@@ -30,9 +30,9 @@ var InvalidInfosProvidedError = Error{
 	Message: "Invalid informations provided",
 }
 
-var InternalError = Error{
+var DatabaseError = Error{
 	Code:    "ERR07",
-	Message: "Internal Error",
+	Message: "Database Error",
 }
 
 var InvalidPriceError = Error{
@@ -52,7 +52,7 @@ var AtLeastTwoTeamsError = Error{
 
 var TournamentWithSameNameUnfinishedError = Error{
 	Code:    "ERR11",
-	Message: "A tournament with the same name already exists and isn't finished",
+	Message: "A tournaments with the same name already exists and isn't finished",
 }
 
 var InvalidTeamSizeError = Error{
@@ -88,9 +88,4 @@ var InvalidEmailError = Error{
 var AccountAlreadyExistError = Error{
 	Code:    "ERR18",
 	Message: "An account with the same username or email has already been created",
-}
-
-var InvalidDateTimeError = Error{
-	Code:    "ERR19",
-	Message: "Invalid date or time value",
 }
