@@ -12,7 +12,7 @@ func FetchTournamentByID(id int) (*models.Tournament, error) {
 	row := db.QueryRow("select * from tournaments where id=?", id)
 
 	tournament := new(models.Tournament)
-	err := row.Scan(&tournament.Id,
+	err := row.Scan(&tournament.ID,
 		&tournament.Name,
 		&tournament.Count,
 		&tournament.Price,
@@ -33,7 +33,7 @@ func FetchTournament(name, game string) (*models.Tournament, error) {
 	// Check if the tournament already exists
 	row := db.QueryRow("select * from tournaments where name=? and game=? order by id desc", name, game)
 	tournament := new(models.Tournament)
-	err := row.Scan(&tournament.Id,
+	err := row.Scan(&tournament.ID,
 		&tournament.Name,
 		&tournament.Count,
 		&tournament.Price,

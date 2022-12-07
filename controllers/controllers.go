@@ -14,7 +14,7 @@ func InitDatabase() {
 	Counter = 1
 
 	Accueil1 := models.Accueil{
-		Id:        1,
+		ID:        1,
 		Titre:     "Ydays neeft",
 		Createurs: "Kenan, Mathias",
 	}
@@ -35,7 +35,7 @@ func CreateBook(c *gin.Context) {
 	}
 	Counter++
 	// Create book
-	Accueil := models.Accueil{Id: Counter, Titre: input.Titre, Createurs: input.Createurs}
+	Accueil := models.Accueil{ID: Counter, Titre: input.Titre, Createurs: input.Createurs}
 	Library = append(Library, Accueil)
 
 	c.JSON(http.StatusOK, gin.H{"data": Accueil})

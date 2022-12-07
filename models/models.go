@@ -1,13 +1,13 @@
 package models
 
 type Accueil struct {
-	Id        int    `json:"id"`
+	ID        int    `json:"id"`
 	Titre     string `json:"titre"`
 	Createurs string `json:"createurs"`
 }
 
 type User struct {
-	Id                    int    `json:"id"`
+	ID                    int    `json:"id"`
 	Username              string `json:"username"`
 	Password              string `json:"password"`
 	FirstName             string `json:"firstName"`
@@ -17,7 +17,7 @@ type User struct {
 }
 
 type Team struct {
-	Id              int    `json:"id"`
+	ID              int    `json:"id"`
 	Name            string `json:"teamName"`
 	UserCount       int    `json:"userCount"`
 	GameName        string `json:"game"`
@@ -27,7 +27,7 @@ type Team struct {
 }
 
 type Tournament struct {
-	Id         int    `json:"id"`
+	ID         int    `json:"id"`
 	Name       string `json:"tournamentName"`
 	Count      int    `json:"count"`
 	Price      int    `json:"price"`

@@ -11,7 +11,7 @@ func FetchTeam(name string) (*models.Team, error) {
 
 	row := db.QueryRow("select * from teams where team_name=?", name)
 	team := new(models.Team)
-	err := row.Scan(&team.Id,
+	err := row.Scan(&team.ID,
 		&team.Name,
 		&team.UserCount,
 		&team.GameName,

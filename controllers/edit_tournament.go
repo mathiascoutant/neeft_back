@@ -9,7 +9,7 @@ import (
 )
 
 type EditTournamentDTO struct {
-	Id        int    `json:"id"`
+	ID        int    `json:"id"`
 	Name      string `json:"name"`
 	Game      string `json:"game"`
 	Mode      string `json:"mode"`
@@ -30,14 +30,14 @@ func EditTournament(c *gin.Context) {
 		return
 	}
 
-	tournament, err := db.FetchTournamentByID(req.Id)
+	tournament, err := db.FetchTournamentByID(req.ID)
 	if err != nil {
 		fmt.Println(err.Error())
 		utils.SendError(c, utils.TournamentDoesNotExistError)
 		return
 	}
 
-	tournamentId := req.Id
+	tournamentId := req.ID
 	tournamentName := req.Name
 	tournamentGame := req.Game
 	tournamentPrice := req.Price
@@ -62,7 +62,7 @@ func EditTournament(c *gin.Context) {
 		return
 	}
 
-	tournament, err = db.FetchTournamentByID(req.Id)
+	tournament, err = db.FetchTournamentByID(req.ID)
 
 	if err != nil {
 		fmt.Println(err.Error())

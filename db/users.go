@@ -14,7 +14,7 @@ func FetchUser(username string) (*models.User, error) {
 
 	user := new(models.User)
 
-	err := row.Scan(&user.Id,
+	err := row.Scan(&user.ID,
 		&user.Username,
 		&user.Password,
 		&user.FirstName,

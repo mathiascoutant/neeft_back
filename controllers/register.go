@@ -69,7 +69,7 @@ func Register(c *gin.Context) {
 	row := db.QueryRow("select * from users where username=? or email=?", inUsername, inEmail)
 	user := new(models.User)
 
-	err := row.Scan(&user.Id,
+	err := row.Scan(&user.ID,
 		&user.Username,
 		&user.Password,
 		&user.FirstName,
@@ -98,5 +98,5 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	utils.SendOK(c, gin.H{"message": "success", "userId": toRegisterUser.Id})
+	utils.SendOK(c, gin.H{"message": "success", "userId": toRegisterUser.ID})
 }

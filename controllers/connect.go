@@ -41,6 +41,6 @@ func Connect(c *gin.Context) {
 		utils.SendError(c, utils.UsernameOrPasswordInvalidError)
 		return
 	} else {
-		utils.SendOK(c, gin.H{"message": "Success", "userId": registerUser.Id})
+		utils.SendOK(c, gin.H{"message": "Success", "userId": registerUser.ID})
 	}
 }
