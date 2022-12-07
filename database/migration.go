@@ -16,7 +16,9 @@ func RunMigration(db *gorm.DB) {
 	err := db.AutoMigrate(
 		&users.User{},
 		&teams.Team{},
+		&teams.UsersTeam{},
 		&tournaments.Tournament{},
+		&tournaments.TournamentTeams{},
 		&users.AddFriend{},
 	)
 	if err != nil {
