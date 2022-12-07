@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -21,9 +21,11 @@ type DbInstance struct {
 // Database : object instance
 var Database DbInstance
 
+const DNS string = "root@tcp(localhost:3307)/dbbneeft?charset=utf8mb4&parseTime=True&loc=Local"
+
 // ConnectDb : Connection to the database
 func ConnectDb() {
-	db, err := gorm.Open(sqlite.Open("dbbneeft.db"), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(DNS), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Failed to connect to the database! \n", err)
