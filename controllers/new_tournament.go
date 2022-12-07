@@ -9,12 +9,6 @@ import (
 	"neeft_back/utils"
 )
 
-func NewTournamentOptions(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-}
-
 type CreateTournamentDTO struct {
 	Name      string `json:"name"`
 	Game      string `json:"game"`
@@ -26,13 +20,13 @@ type CreateTournamentDTO struct {
 }
 
 func NewTournament(c *gin.Context) {
-	NewTournamentOptions(c)
+	utils.NewTournamentOptions(c)
 
 	var req CreateTournamentDTO
 
 	if err := c.BindJSON(&req); err != nil {
 		fmt.Println(err.Error())
-		utils.SendError(c, 401, utils.InvalidRequestFormat)
+		utils.SendError(c, utils.InvalidRequestFormat)
 		return
 	}
 
@@ -45,31 +39,31 @@ func NewTournament(c *gin.Context) {
 
 	// Check if the tournament name isn't empty
 	if len(tournamentName) <= 0 {
-		utils.SendError(c, 401, utils.TournamentNameEmptyError)
+		utils.SendError(c, utils.TournamentNameEmptyError)
 		return
 	}
 
 	// Check if the tournament price is higher than 0
 	if tournamentPrice <= 0 {
-		utils.SendError(c, 401, utils.InvalidPriceError)
+		utils.SendError(c, utils.InvalidPriceError)
 		return
 	}
 
 	// Check if the number of team is equals or higher than 2
 	if tournamentTeamCount < 2 {
-		utils.SendError(c, 401, utils.AtLeastTwoTeamsError)
+		utils.SendError(c, utils.AtLeastTwoTeamsError)
 		return
 	}
 
 	// Check if the begin & end time aren't null
 	if len(tournamentBeginDate) <= 0 || len(tournamentBeginTime) <= 0 {
-		utils.SendError(c, 401, utils.InvalidDateTimeError)
+		utils.SendError(c, utils.InvalidDateTimeError)
 		return
 	}
 
 	tournament, err := db.FetchTournament(tournamentName, tournamentGame)
 	if err == nil && tournament.Name == tournamentName && tournament.IsFinished == 0 {
-		utils.SendError(c, 401, utils.TournamentWithSameNameUnfinishedError)
+		utils.SendError(c, utils.TournamentWithSameNameUnfinishedError)
 		return
 	}
 
@@ -77,14 +71,14 @@ func NewTournament(c *gin.Context) {
 
 	if tournamentGame == "Lol" {
 		if tournamentTeamCount%2 != 0 {
-			utils.SendError(c, 401, utils.InvalidTeamSizeError)
+			utils.SendError(c, utils.InvalidTeamSizeError)
 			return
 		}
 	} else if tournamentGame == "Fortnite" {
 		tournamentMode = req.Mode
 
 		if tournamentMode != "solo" && tournamentMode != "duo" && tournamentMode != "trio" && tournamentMode != "squad" {
-			utils.SendError(c, 401, utils.InvalidPartyModeError)
+			utils.SendError(c, utils.InvalidPartyModeError)
 			return
 		}
 	}
@@ -104,7 +98,7 @@ func NewTournament(c *gin.Context) {
 
 	if err != nil {
 		fmt.Println("RegisterTournament: " + err.Error())
-		utils.SendError(c, 401, utils.InternalError)
+		utils.SendError(c, utils.InternalError)
 		return
 	}
 
@@ -112,7 +106,7 @@ func NewTournament(c *gin.Context) {
 	tournament, err = db.FetchTournament(tournamentName, tournamentGame)
 	if err != nil {
 		fmt.Println("FetchTournament: " + err.Error())
-		utils.SendError(c, 401, utils.InternalError)
+		utils.SendError(c, utils.InternalError)
 		return
 	}
 

@@ -11,12 +11,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func NewTeamOptions(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-}
-
 type CreateTeamDTO struct {
 	Name    string `json:"name"`
 	Game    string `json:"game"`
@@ -24,12 +18,12 @@ type CreateTeamDTO struct {
 }
 
 func NewTeam(c *gin.Context) {
-	NewTeamOptions(c)
+	utils.NewTeamOptions(c)
 
 	var req CreateTeamDTO
 
 	if err := c.BindJSON(&req); err != nil {
-		utils.SendError(c, 401, utils.InvalidRequestFormat)
+		utils.SendError(c, utils.InvalidRequestFormat)
 		return
 	}
 
@@ -38,7 +32,7 @@ func NewTeam(c *gin.Context) {
 	teamCreator := req.Creator
 
 	if len(teamName) == 0 || len(teamGame) == 0 || len(teamCreator) == 0 {
-		utils.SendError(c, 401, utils.InvalidInfosProvidedError)
+		utils.SendError(c, utils.InvalidInfosProvidedError)
 		return
 	}
 
@@ -46,7 +40,7 @@ func NewTeam(c *gin.Context) {
 
 	team, err := db2.FetchTeam(teamName)
 	if err == nil && team.Name == teamName {
-		utils.SendError(c, 401, utils.TeamWithSameNameExistsError)
+		utils.SendError(c, utils.TeamWithSameNameExistsError)
 		return
 	}
 
@@ -63,7 +57,7 @@ func NewTeam(c *gin.Context) {
 	})
 
 	if err != nil {
-		utils.SendError(c, 401, utils.InternalError)
+		utils.SendError(c, utils.InternalError)
 		return
 	}
 

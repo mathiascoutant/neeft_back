@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func FetchTournamentById(id int) (*models.Tournament, error) {
+func FetchTournamentByID(id int) (*models.Tournament, error) {
 	db := OpenDB()
 
 	row := db.QueryRow("select * from tournaments where id=?", id)
@@ -49,7 +49,7 @@ func FetchTournament(name, game string) (*models.Tournament, error) {
 }
 
 func UpdateTournament(id int, name string, count int, price int, game string, teamsCount int, mode string, beginDate string, beginTime string) error {
-	originalTournament, err := FetchTournamentById(id)
+	originalTournament, err := FetchTournamentByID(id)
 	if err != nil {
 		return err
 	}

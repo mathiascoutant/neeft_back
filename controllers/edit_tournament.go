@@ -8,12 +8,6 @@ import (
 	"neeft_back/utils"
 )
 
-func EditTournamentOptions(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-}
-
 type EditTournamentDTO struct {
 	Id        int    `json:"id"`
 	Name      string `json:"name"`
@@ -26,20 +20,20 @@ type EditTournamentDTO struct {
 }
 
 func EditTournament(c *gin.Context) {
-	EditTournamentOptions(c)
+	utils.EditTournamentOptions(c)
 
 	var req EditTournamentDTO
 
 	if err := c.BindJSON(&req); err != nil {
 		fmt.Println(err.Error())
-		utils.SendError(c, 401, utils.InvalidRequestFormat)
+		utils.SendError(c, utils.InvalidRequestFormat)
 		return
 	}
 
-	tournament, err := db.FetchTournamentById(req.Id)
+	tournament, err := db.FetchTournamentByID(req.Id)
 	if err != nil {
 		fmt.Println(err.Error())
-		utils.SendError(c, 401, utils.TournamentDoesNotExistError)
+		utils.SendError(c, utils.TournamentDoesNotExistError)
 		return
 	}
 
@@ -64,15 +58,15 @@ func EditTournament(c *gin.Context) {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		utils.SendError(c, 401, utils.InternalError)
+		utils.SendError(c, utils.InternalError)
 		return
 	}
 
-	tournament, err = db.FetchTournamentById(req.Id)
+	tournament, err = db.FetchTournamentByID(req.Id)
 
 	if err != nil {
 		fmt.Println(err.Error())
-		utils.SendError(c, 401, utils.InternalError)
+		utils.SendError(c, utils.InternalError)
 		return
 	}
 

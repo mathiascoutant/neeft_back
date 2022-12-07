@@ -11,6 +11,7 @@ func main() {
 	r := gin.Default()
 
 	setupRoutes(r)
+	setupCORS(r)
 
 	r.Run()
 }

@@ -11,12 +11,6 @@ import (
 	"strings"
 )
 
-func RegisterOptions(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST")
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-}
-
 type CreateUserDTO struct {
 	Username  string `json:"username"`
 	Password  string `json:"password"`
@@ -26,6 +20,7 @@ type CreateUserDTO struct {
 }
 
 func Register(c *gin.Context) {
+	utils.RegisterOptions(c)
 	// Open the database
 	db, _ := sql.Open("sqlite3", "./bdd.db")
 	defer db.Close()
@@ -35,7 +30,7 @@ func Register(c *gin.Context) {
 	var req CreateUserDTO
 
 	if err := c.BindJSON(&req); err != nil {
-		utils.SendError(c, 401, utils.InvalidRequestFormat)
+		utils.SendError(c, utils.InvalidRequestFormat)
 		return
 	}
 
@@ -46,27 +41,27 @@ func Register(c *gin.Context) {
 	inEmail := req.Email
 
 	if len(inUsername) == 0 {
-		utils.SendError(c, 401, utils.UsernameEmptyError)
+		utils.SendError(c, utils.UsernameEmptyError)
 		return
 	}
 
 	if len(inPassword) < 4 {
-		utils.SendError(c, 401, utils.PasswordTooShortError)
+		utils.SendError(c, utils.PasswordTooShortError)
 		return
 	}
 
 	if len(inFirstName) == 0 {
-		utils.SendError(c, 401, utils.InvalidFirstNameError)
+		utils.SendError(c, utils.InvalidFirstNameError)
 		return
 	}
 
 	if len(inLastName) == 0 {
-		utils.SendError(c, 401, utils.InvalidLastNameError)
+		utils.SendError(c, utils.InvalidLastNameError)
 		return
 	}
 
 	if len(inEmail) == 0 || !strings.Contains(inEmail, "@") {
-		utils.SendError(c, 401, utils.InvalidEmailError)
+		utils.SendError(c, utils.InvalidEmailError)
 		return
 	}
 
@@ -83,7 +78,7 @@ func Register(c *gin.Context) {
 		&user.EmailVerificationDate)
 
 	if err == nil || user.Username == inUsername || user.Email == inEmail {
-		utils.SendError(c, 401, utils.AccountAlreadyExistError)
+		utils.SendError(c, utils.AccountAlreadyExistError)
 		return
 	}
 
@@ -99,7 +94,7 @@ func Register(c *gin.Context) {
 
 	if err != nil {
 		fmt.Println("RegisterUser: " + err.Error())
-		utils.SendError(c, 401, utils.InternalError)
+		utils.SendError(c, utils.InternalError)
 		return
 	}
 
