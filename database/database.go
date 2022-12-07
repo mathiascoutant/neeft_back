@@ -21,7 +21,7 @@ type DbInstance struct {
 // Database : object instance
 var Database DbInstance
 
-const DNS string = "root@tcp(localhost:3307)/dbbneeft?charset=utf8mb4&parseTime=True&loc=Local"
+const DNS string = "bbce14802e2bf7:765f916b@tcp(eu-cdbr-west-03.cleardb.net:3306)/heroku_9a62a0aad140d17?charset=utf8mb4&parseTime=True&loc=Local"
 
 // ConnectDb : Connection to the database
 func ConnectDb() {
