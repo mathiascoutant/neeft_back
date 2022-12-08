@@ -1,0 +1,5 @@
+Postuler à un tournoi:
+    Ajout de la proposition: OK
+    Erreur si la même team veut repostuler une deuxième fois: OK
+    Erreur si la team passée n'existe pas: OK
+    Erreur si le tournament passé n'existe pas: OK

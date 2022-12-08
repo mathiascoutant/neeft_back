@@ -16,6 +16,7 @@ func SetupRouters(app *fiber.App) {
 
 	//------------------ Users ------------------
 	api.Post("/user", users.CreateUser)
+	api.Post("/register", users.CreateUser)
 	api.Get("/users", users.GetAllUser)
 	api.Get("/user/:id", users.GetUser)
 	api.Put("/user/:id", users.UpdateUser)
@@ -35,5 +36,6 @@ func SetupRouters(app *fiber.App) {
 	api.Get("/tournaments", tournament.GetAllTournament)
 	api.Get("/tournament/:id", tournament.GetTournament)
 	api.Delete("/tournament/:id", tournament.DeleteTournament)
+	api.Post("/tournament/:id/request", tournament.SendPendingRequest)
 
 }
