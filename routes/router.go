@@ -30,6 +30,7 @@ func SetupRouters(app *fiber.App) {
 	api.Post("/team", teams.CreateTeam)
 	api.Get("/teams", teams.GetAllTeam)
 	api.Get("/team/:id", teams.GetTeam)
+	api.Post("/team/:id/maxUserCount", teams.SetMaxUserCount)
 
 	//------------------ Tournaments ------------------
 	api.Post("/tournament", tournament.CreateTournament)

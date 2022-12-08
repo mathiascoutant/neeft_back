@@ -24,6 +24,10 @@ type TeamSerialize struct {
 	TournamentCount uint            `json:"tournamentCount"`
 }
 
+type TeamMaxUserCountInput struct {
+	MaxUserCount uint `json:"maxUserCount"`
+}
+
 // CreateResponseTeam  /**
 func CreateResponseTeam(userModel usersModel.User, teamModel teams.Team) TeamSerialize {
 	return TeamSerialize{
@@ -117,4 +121,30 @@ func DeleteTeam(c *fiber.Ctx) error {
 	database.Database.Db.Delete(&team)
 
 	return c.Status(200).JSON("Team deleted successfully")
+}
+
+func SetMaxUserCount(c *fiber.Ctx) error {
+	teamId, err := c.ParamsInt("id")
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON("Please ensure that :id is an integer")
+	}
+
+	var team teams.Team
+	var input TeamMaxUserCountInput
+
+	if err := c.BodyParser(&input); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	if err := FindTeam(teamId, &team); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	// If MaxUserCount is equal to zero, we assume that there is no limit
+
+	// Update the max user count of the team variable in the database directly
+	database.Database.Db.Model(&team).Update("max_user_count", input.MaxUserCount)
+
+	return c.Status(200).JSON("Max user count of team changed successfully")
 }
