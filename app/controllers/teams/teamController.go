@@ -137,11 +137,13 @@ func SetMaxUserCount(c *fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 
+	if input.MaxUserCount == 0 || input.MaxUserCount > 20 {
+		return c.Status(400).JSON("MaxUserCount needs to be between 1 and 20 included")
+	}
+
 	if err := FindTeam(teamId, &team); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
-
-	// If MaxUserCount is equal to zero, we assume that there is no limit
 
 	// Update the max user count of the team variable in the database directly
 	database.Database.Db.Model(&team).Update("max_user_count", input.MaxUserCount)
