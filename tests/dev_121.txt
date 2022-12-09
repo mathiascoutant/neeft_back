@@ -1,0 +1,13 @@
+Badges:
+    User:
+        Ajout d'un badge: OK
+        Erreur quand nom du badge est vide: OK
+        Erreur quand description du badge vide: OK
+        Erreur quand catégorie du badge vide: OK
+        Erreur quand on essaye de créer un badge qui existe déjà: OK
+    Team:
+        Ajout d'un badge: OK
+        Erreur quand nom du badge est vide: OK
+        Erreur quand description du badge vide: OK
+        Erreur quand catégorie du badge vide: OK
+        Erreur quand on essaye de créer un badge qui existe déjà: OK
