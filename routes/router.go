@@ -16,6 +16,7 @@ func SetupRouters(app *fiber.App) {
 
 	//------------------ Users ------------------
 	api.Post("/user", users.CreateUser)
+	api.Post("/register", users.CreateUser)
 	api.Get("/users", users.GetAllUser)
 	api.Get("/user/:id", users.GetUser)
 	api.Put("/user/:id", users.UpdateUser)
@@ -29,6 +30,7 @@ func SetupRouters(app *fiber.App) {
 	api.Post("/team", teams.CreateTeam)
 	api.Get("/teams", teams.GetAllTeam)
 	api.Get("/team/:id", teams.GetTeam)
+	api.Post("/team/:id/maxUserCount", teams.SetMaxUserCount)
 
 	//------------------ Tournaments ------------------
 	api.Post("/tournament", tournament.CreateTournament)

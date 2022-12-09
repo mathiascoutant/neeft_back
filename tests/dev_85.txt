@@ -1,0 +1,7 @@
+Changer le nombre max d'user par équipe:
+    Requête classique: OK
+    Erreur quand la requête d'entrée est incorrecte (pas du JSON ou maxUserCount != int): OK
+    Erreur quand le nombre est négatif: OK
+    Erreur quand le nombre est zéro: OK
+    Erreur quand le nombre est > 20: OK
+    Accepte quand le nombre est 20: OK

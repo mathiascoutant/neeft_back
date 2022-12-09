@@ -10,4 +10,5 @@ type UsersTeam struct {
 	User   users.User `gorm:"foreignkey:UserId"`
 	TeamId uint       `gorm:"not null" json:"teamId"`
 	Team   Team       `gorm:"foreignkey:TeamId"`
+	Status uint	      `gorm:"not null" json:"status"`
 }

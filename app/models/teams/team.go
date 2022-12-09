@@ -16,7 +16,8 @@ type Team struct {
 	Name            string     `gorm:"varchar(255)" json:"name"`
 	UserCount       uint       `gorm:"uint" json:"userCount"`
 	GameName        string     `gorm:"varchar(255)" json:"gameName"`
-	TournamentCount uint       `gorm:"uint" json:"tournamentCount "`
+	TournamentCount uint       `gorm:"uint" json:"tournamentCount"`
+	MaxUserCount    uint       `gorm:"not null" json:"maxUserCount"`
 	Created_at      time.Time
 	Updated_at      time.Time
 	Deleted_at      time.Time
