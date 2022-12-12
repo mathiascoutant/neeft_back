@@ -118,3 +118,25 @@ func DeleteTeam(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON("Team deleted successfully")
 }
+
+// Accept a user in a team
+
+func AcceptUser(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+
+	var usersteam teams.UsersTeam
+	var team teams.Team
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON("Please ensure that : id is an integer")
+	}
+
+	if err := FindTeam(id, &team); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+	usersteam.Status = 1
+
+	database.Database.Db.Save(&usersteam)
+
+	return c.Status(200).JSON("User successfully added to the team")
+}
