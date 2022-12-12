@@ -41,9 +41,38 @@ func CreateResponseTournament(tournamentModel tournaments.Tournament) Tournament
 // CreateTournament function to create a new tournament
 func CreateTournament(c *fiber.Ctx) error {
 	var tournament tournaments.Tournament
+	var tempTournament tournaments.Tournament
 
 	if err := c.BodyParser(&tournament); err != nil {
 		return c.Status(400).JSON(err.Error())
+	}
+
+	// Security measures, if the client tries to override that
+	tournament.IsFinished = false
+
+	database.Database.Db.Find(&tempTournament, "name = ? AND is_finished = 0", tournament.Name)
+	if tempTournament.ID != 0 {
+		return c.Status(400).JSON("The tournament already exists and is not finished")
+	}
+
+	if len(tournament.Name) == 0 {
+		return c.Status(400).JSON("The tournament name must not be empty")
+	}
+
+	if len(tournament.Game) == 0 {
+		return c.Status(400).JSON("The tournament game name must not be empty")
+	}
+
+	if len(tournament.Mode) == 0 {
+		tournament.Mode = "none"
+	}
+
+	if tournament.Price == 0 {
+		return c.Status(400).JSON("The tournament price must be higher than zero")
+	}
+
+	if tournament.TeamsCount < 2 {
+		return c.Status(400).JSON("The tournament's team count is invalid")
 	}
 
 	database.Database.Db.Create(&tournament)
