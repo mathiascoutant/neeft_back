@@ -1,0 +1,9 @@
+Nouveau tournoi :
+    Création de tournoi : OK
+    Erreur quand le tournoi existe déjà et n'est pas fini : NON (Accepte quand même)
+    Erreur quand le nom du tournoi est vide : NON (Accepte quand même)
+    Erreur quand le nom du jeu est vide : NON (Accepte quand même)
+    Erreur quand le prix est à zéro : NON (Accepte quand même)
+    Erreur quand le nombre d'équipes est = à zéro : NON (Accepte quand même)
+    Erreur quand la date de départ est vide : NON (Accepte quand même)
+    Erreur quand l'heure de départ est vide : NON (Accepte quand même)
