@@ -141,6 +141,28 @@ Supprime l'utilisateur avec l'id `id`
 "Successfully deleted User"
 ```
 
+### GET `/api/user/{id}/profile/public`
+Retourne le profil public de l'utilisateur avec l'id `id`
+
+**Arguments**
+
+`id` (URL) : ID de l'utilisateur auquel on veut récupérer le profil public
+
+```json
+{ }
+```
+
+**Réponse**
+```json
+{
+  "id": 11,
+  "username": "John Doe",
+  "image": "/images/players/profiles/player_placeholder.png",
+  "description": "One guy",
+  "teams": {...}
+}
+```
+
 ## Amis
 
 ### POST `/api/friend`
