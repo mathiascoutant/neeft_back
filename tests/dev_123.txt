@@ -1,0 +1,5 @@
+Profil public:
+    La requête aboutie normalement : OK
+    Erreur quand l'ID est invalide : OK
+    Erreur quand l'ID n'appartient à personne : OK
+    Retourne bien les teams du joueur : OK
