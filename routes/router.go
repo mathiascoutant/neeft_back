@@ -21,6 +21,7 @@ func SetupRouters(app *fiber.App) {
 	api.Get("/user/:id", users.GetUser)
 	api.Put("/user/:id", users.UpdateUser)
 	api.Delete("/user/:id", users.DeleteUser)
+	api.Get("/user/:id/profile/public", users.GetUserPublicProfile)
 
 	//------------------ Users Friend ------------------
 	api.Post("/friend", users.CreateUserFriend)

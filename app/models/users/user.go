@@ -14,6 +14,8 @@ type User struct {
 	Email           string `gorm:"varchar(255)" json:"email"`
 	EmailVerifiedAt bool   `gorm:"boolean"      json:"emailVerifiedAt"`
 	Password        string `gorm:"varchar(255)" json:"password"`
+	Description     string `gorm:"varchar(255)" json:"description"`
+	Image           string `gorm:"varchar(255)" json:"image"`
 	Created_at      time.Time
 	Updated_at      time.Time
 	Deleted_at      time.Time
