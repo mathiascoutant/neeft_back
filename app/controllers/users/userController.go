@@ -7,6 +7,7 @@ package users
 import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
+	"neeft_back/app/config"
 	"neeft_back/app/helper"
 	"neeft_back/app/models/users"
 	"neeft_back/database"
@@ -79,6 +80,14 @@ func GetAllUser(c *fiber.Ctx) error {
 // FindUser function to find a user by id in the database
 func FindUser(id int, user *users.User) error {
 	database.Database.Db.Find(&user, "id = ?", id)
+	if user.ID == 0 {
+		return errors.New("user does not exist")
+	}
+	return nil
+}
+
+func FindUserByClaim(claims config.JWTClaims, user *users.User) error {
+	database.Database.Db.Find(&user, "id = ?", claims.UserId)
 	if user.ID == 0 {
 		return errors.New("user does not exist")
 	}
@@ -171,3 +180,26 @@ func DeleteUser(c *fiber.Ctx) error {
 	}
 	return c.Status(200).JSON("Successfully deleted User")
 }
+
+/*
+// JWTDebug used to test JWT authentication
+func JWTDebug(c *fiber.Ctx) error {
+	claims := config.JWTClaims{}
+
+	if err := utils.CheckJWT(c, &claims); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	fmt.Println("after")
+	fmt.Println(claims.UserId)
+	fmt.Println(claims.Email)
+
+	user := users.User{}
+
+	if err := FindUserByClaim(claims, &user); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	return c.Status(200).JSON(user)
+}
+*/

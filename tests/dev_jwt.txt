@@ -1,0 +1,5 @@
+JWT:
+    Le login retourne un token valide: OK
+    Authentification avec le token : OK
+    Refus si token invalide : OK
+    Refus si l'utilisateur est invalide dans le token: OK

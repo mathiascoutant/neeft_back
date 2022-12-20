@@ -38,23 +38,24 @@ func Login(c *fiber.Ctx) error {
 
 	// Generate JWT token for Auth user
 	expireTime := time.Now().Add(time.Minute * 60)
-	clams := &config.TWTClaim{
+	claims := &config.JWTClaims{
 		Email:            user.Email,
+		UserId:           user.ID,
 		RegisteredClaims: jwt.RegisteredClaims{Issuer: "neeft", ExpiresAt: jwt.NewNumericDate(expireTime)},
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, clams)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(config.JWT_SECRET)
 	if err != nil {
 		return helper.Return500(c, err.Error())
 	}
 
-	// Send token to cookie
-	// send token to cookie
+	// The JWT token is stored inside a cookie that we use later for authentication
 	c.Cookie(&fiber.Cookie{
 		Name:    "token",
 		Value:   tokenString,
 		Expires: expireTime,
 	})
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "login success",
 		"token":   tokenString,
