@@ -1,0 +1,7 @@
+Modifier le nom
+Modifier le nombre de joueur
+Modifier le prix
+Modifier le jeu
+Modifier le nombre de team
+Vérifier si le tournois 
+Modifier le mode
