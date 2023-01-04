@@ -36,6 +36,11 @@ func Login(c *fiber.Ctx) error {
 		return helper.Return401(c, "Invalid credentials")
 	}
 
+	// Check if the user has the same user agent as stored
+	if user.LastUserAgent != string(c.Request().Header.UserAgent()) {
+		return helper.Return401(c, "User Agent has changed")
+	}
+
 	// Generate JWT token for Auth user
 	expireTime := time.Now().Add(time.Minute * 60 * 24 * 14) // Two weeks
 	claims := &config.JWTClaims{

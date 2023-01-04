@@ -58,6 +58,7 @@ func CreateUser(c *fiber.Ctx) error {
 
 	hashUserPassword := helper.HashAndSalt([]byte(user.Password))
 	user.Password = hashUserPassword
+	user.LastUserAgent = string(c.Request().Header.UserAgent())
 
 	database.Database.Db.Create(&user)
 	responseUser := CreateResponseUser(user)
