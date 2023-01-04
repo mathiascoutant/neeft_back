@@ -8,7 +8,7 @@ import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"neeft_back/app/helper"
-	"neeft_back/app/models/users"
+	"neeft_back/app/models"
 	"neeft_back/database"
 	"time"
 )
@@ -25,7 +25,7 @@ type UserSerialize struct {
 }
 
 // CreateResponseUser /**
-func CreateResponseUser(userModel users.User) UserSerialize {
+func CreateResponseUser(userModel models.User) UserSerialize {
 	return UserSerialize{
 		ID:        userModel.ID,
 		Username:  userModel.Username,
@@ -37,7 +37,7 @@ func CreateResponseUser(userModel users.User) UserSerialize {
 }
 
 func EmailExist(email string) bool {
-	var user users.User
+	var user models.User
 	if err := database.Database.Db.Where("email = ?", email).First(&user).Error; err != nil {
 		return false
 	}
@@ -46,7 +46,7 @@ func EmailExist(email string) bool {
 
 // CreateUser function to create a new user
 func CreateUser(c *fiber.Ctx) error {
-	var user users.User
+	var user models.User
 
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(400).JSON(err.Error())
@@ -66,7 +66,7 @@ func CreateUser(c *fiber.Ctx) error {
 
 // GetAllUser function to get all users in the database
 func GetAllUser(c *fiber.Ctx) error {
-	var allUsers []users.User
+	var allUsers []models.User
 	database.Database.Db.Find(&allUsers)
 	var responseUsers []UserSerialize
 	for _, user := range allUsers {
@@ -77,7 +77,7 @@ func GetAllUser(c *fiber.Ctx) error {
 }
 
 // FindUser function to find a user by id in the database
-func FindUser(id int, user *users.User) error {
+func FindUser(id int, user *models.User) error {
 	database.Database.Db.Find(&user, "id = ?", id)
 	if user.ID == 0 {
 		return errors.New("user does not exist")
@@ -89,7 +89,7 @@ func FindUser(id int, user *users.User) error {
 func GetUser(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
-	var user users.User
+	var user models.User
 
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON("Please ensure that :id is an integer")
@@ -108,7 +108,7 @@ func GetUser(c *fiber.Ctx) error {
 func UpdateUser(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
-	var user users.User
+	var user models.User
 
 	if err != nil {
 		return c.Status(400).JSON("Please ensure that :id is an integer")
@@ -154,7 +154,7 @@ func UpdateUser(c *fiber.Ctx) error {
 func DeleteUser(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
-	var user users.User
+	var user models.User
 
 	if err != nil {
 		return c.Status(400).JSON("Please ensure that :id is an integer")

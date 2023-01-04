@@ -7,7 +7,7 @@ package authController
 import (
 	"github.com/gofiber/fiber/v2"
 	"neeft_back/app/helper"
-	"neeft_back/app/models/users"
+	"neeft_back/app/models"
 	"neeft_back/database"
 	"time"
 
@@ -18,7 +18,7 @@ import (
 // Login : Login a user and return a token to be used for authentication
 func Login(c *fiber.Ctx) error {
 
-	userInformation := new(users.User)
+	userInformation := new(models.User)
 
 	// Get the user information from the request body
 	if err := c.BodyParser(userInformation); err != nil {
@@ -26,7 +26,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Check if the user exists in the database
-	var user users.User
+	var user models.User
 	if err := database.Database.Db.Find(&user, "email = ?", userInformation.Email).First(&user).Error; err != nil {
 		return helper.Return401(c, "Invalid credentials")
 	}

@@ -1,6 +1,8 @@
-package teams
+package models
 
-import "time"
+import (
+	"time"
+)
 
 type InfoPro struct {
 	ID     uint   `json:"id" gorm:"primaryKey"`

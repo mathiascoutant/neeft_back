@@ -1,4 +1,4 @@
-package users
+package models
 
 /**
  * @Author ANYARONKE Daré Samuel

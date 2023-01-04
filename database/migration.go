@@ -6,29 +6,25 @@ package database
 
 import (
 	"gorm.io/gorm"
-	"neeft_back/app/models/games"
-	"neeft_back/app/models/roles"
-	"neeft_back/app/models/teams"
-	"neeft_back/app/models/tournaments"
-	"neeft_back/app/models/users"
+	"neeft_back/app/models"
 )
 
 // RunMigration : Run the migration to initialize the database
 func RunMigration(db *gorm.DB) {
 	err := db.AutoMigrate(
 		// Users
-		&roles.Role{},
-		&users.User{},
-		&users.UserROle{},
-		&teams.Team{},
-		&teams.InfoPro{},
-		&teams.UsersTeam{},
-		&games.Game{},
-		&tournaments.Tournament{},
-		&tournaments.TeamRegistrationTournament{},
-		&tournaments.TournamentPlayer{},
-		&tournaments.Bracket{},
-		&users.AddFriend{},
+		&models.Role{},
+		&models.User{},
+		&models.UserRole{},
+		&models.Team{},
+		&models.InfoPro{},
+		&models.UsersTeam{},
+		&models.Game{},
+		&models.Tournament{},
+		&models.TeamRegistrationTournament{},
+		&models.TournamentPlayer{},
+		&models.Bracket{},
+		&models.AddFriend{},
 	)
 	if err != nil {
 		return

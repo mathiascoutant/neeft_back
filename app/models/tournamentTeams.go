@@ -1,7 +1,6 @@
-package tournaments
+package models
 
 import (
-	"neeft_back/app/models/teams"
 	"time"
 )
 
@@ -10,7 +9,7 @@ type TournamentTeams struct {
 	TournamentId uint       `gorm:"not null" json:"tournamentId"`
 	Tournament   Tournament `gorm:"foreignkey:TournamentId"`
 	TeamId       uint       `gorm:"not null" json:"teamId"`
-	Team         teams.Team `gorm:"foreignkey:TeamId"`
+	Team         Team       `gorm:"foreignkey:TeamId"`
 	Status       uint       `gorm:"not null" json:"status"`
 
 	Created_at time.Time

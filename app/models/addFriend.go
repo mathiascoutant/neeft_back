@@ -1,6 +1,8 @@
-package users
+package models
 
-import "time"
+import (
+	"time"
+)
 
 type AddFriend struct {
 	ID       uint `json:"id" gorm:"primaryKey"`

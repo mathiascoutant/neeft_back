@@ -8,8 +8,7 @@ import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	usersController "neeft_back/app/controllers/users"
-	"neeft_back/app/models/teams"
-	usersModel "neeft_back/app/models/users"
+	usersModel "neeft_back/app/models"
 	"neeft_back/database"
 )
 
@@ -25,7 +24,7 @@ type TeamSerialize struct {
 }
 
 // CreateResponseTeam  /**
-func CreateResponseTeam(userModel usersModel.User, teamModel teams.Team) TeamSerialize {
+func CreateResponseTeam(userModel usersModel.User, teamModel usersModel.Team) TeamSerialize {
 	return TeamSerialize{
 		ID:              teamModel.ID,
 		User:            userModel,
@@ -38,7 +37,7 @@ func CreateResponseTeam(userModel usersModel.User, teamModel teams.Team) TeamSer
 
 // CreateTeam function to create a team
 func CreateTeam(c *fiber.Ctx) error {
-	var team teams.Team
+	var team usersModel.Team
 
 	if err := c.BodyParser(&team); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
@@ -57,7 +56,7 @@ func CreateTeam(c *fiber.Ctx) error {
 
 // GetAllTeam function to get all teams
 func GetAllTeam(c *fiber.Ctx) error {
-	var teamsModel []teams.Team
+	var teamsModel []usersModel.Team
 	database.Database.Db.Find(&teamsModel)
 	var responseTeams []TeamSerialize
 	for _, team := range teamsModel {
@@ -71,7 +70,7 @@ func GetAllTeam(c *fiber.Ctx) error {
 }
 
 // FindTeam function to update a team
-func FindTeam(id int, team *teams.Team) error {
+func FindTeam(id int, team *usersModel.Team) error {
 	database.Database.Db.Find(&team, "id = ?", id)
 	if team.ID == 0 {
 		return errors.New("team does not exist")
@@ -83,7 +82,7 @@ func FindTeam(id int, team *teams.Team) error {
 func GetTeam(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
-	var team teams.Team
+	var team usersModel.Team
 
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON("Please ensure that :id is an integer")
@@ -104,7 +103,7 @@ func GetTeam(c *fiber.Ctx) error {
 func DeleteTeam(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
-	var team teams.Team
+	var team usersModel.Team
 
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON("Please ensure that :id is an integer")
