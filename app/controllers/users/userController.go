@@ -7,7 +7,6 @@ package users
 import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
-	"neeft_back/app/config"
 	"neeft_back/app/helper"
 	"neeft_back/app/models/users"
 	"neeft_back/database"
@@ -80,14 +79,6 @@ func GetAllUser(c *fiber.Ctx) error {
 // FindUser function to find a user by id in the database
 func FindUser(id int, user *users.User) error {
 	database.Database.Db.Find(&user, "id = ?", id)
-	if user.ID == 0 {
-		return errors.New("user does not exist")
-	}
-	return nil
-}
-
-func FindUserByClaim(claims config.JWTClaims, user *users.User) error {
-	database.Database.Db.Find(&user, "id = ?", claims.UserId)
 	if user.ID == 0 {
 		return errors.New("user does not exist")
 	}

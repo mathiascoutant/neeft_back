@@ -5,6 +5,7 @@ package authController
  */
 
 import (
+	"errors"
 	"github.com/gofiber/fiber/v2"
 	"neeft_back/app/helper"
 	"neeft_back/app/models/users"
@@ -14,6 +15,14 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"neeft_back/app/config"
 )
+
+func FindUserByClaim(claims config.JWTClaims, user *users.User) error {
+	database.Database.Db.Find(&user, "id = ?", claims.UserId)
+	if user.ID == 0 {
+		return errors.New("user does not exist")
+	}
+	return nil
+}
 
 // Login : Login a user and return a token to be used for authentication
 func Login(c *fiber.Ctx) error {
@@ -37,7 +46,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Generate JWT token for Auth user
-	expireTime := time.Now().Add(time.Minute * 60)
+	expireTime := time.Now().Add(time.Minute * 60 * 24 * 14) // Two weeks
 	claims := &config.JWTClaims{
 		Email:            user.Email,
 		UserId:           user.ID,
