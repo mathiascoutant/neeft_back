@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"neeft_back/app/config"
@@ -14,7 +13,7 @@ func CheckJWT(ctx *fiber.Ctx, decodedClaims *config.JWTClaims) error {
 	token := ctx.Cookies("token", "")
 
 	if token == "" {
-		return errors.New("no JWT token sent by the client")
+		return errors.New("user not authenticated")
 	}
 
 	claims := config.JWTClaims{}
@@ -32,10 +31,6 @@ func CheckJWT(ctx *fiber.Ctx, decodedClaims *config.JWTClaims) error {
 		if time.Now().Unix() > decodedClaims.ExpiresAt.Unix() {
 			return errors.New("token is expired")
 		}
-
-		fmt.Println("before")
-		fmt.Println(decodedClaims.UserId)
-		fmt.Println(decodedClaims.Email)
 		return nil
 	} else {
 		return errors.New("invalid jwt token")
