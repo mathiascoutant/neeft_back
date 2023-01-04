@@ -2,6 +2,7 @@ package teams
 
 import (
 	"neeft_back/app/models/users"
+	"time"
 )
 
 type UsersTeam struct {
@@ -10,5 +11,9 @@ type UsersTeam struct {
 	User   users.User `gorm:"foreignkey:UserId"`
 	TeamId uint       `gorm:"not null" json:"teamId"`
 	Team   Team       `gorm:"foreignkey:TeamId"`
-	Status uint	      `gorm:"not null" json:"status"`
+	Status uint       `gorm:"not null" json:"status"`
+
+	Created_at time.Time
+	Updated_at time.Time
+	Deleted_at time.Time
 }
