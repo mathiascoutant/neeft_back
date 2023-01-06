@@ -9,7 +9,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"neeft_back/app/models"
 	"neeft_back/database"
-	"time"
 )
 
 // TournamentSerialize serializer
@@ -25,17 +24,8 @@ type TournamentSerialize struct {
 }
 
 // CreateResponseTournament /**
-func CreateResponseTournament(tournamentModel models.Tournament) TournamentSerialize {
-	return TournamentSerialize{
-		ID:         tournamentModel.ID,
-		Name:       tournamentModel.Name,
-		Count:      tournamentModel.Count,
-		Price:      tournamentModel.Price,
-		Game:       tournamentModel.Game,
-		TeamsCount: tournamentModel.TeamsCount,
-		IsFinished: tournamentModel.IsFinished,
-		Mode:       tournamentModel.Mode,
-	}
+func CreateResponseTournament(tournamentModel models.Tournament) models.Tournament {
+	return tournamentModel
 }
 
 // CreateTournament function to create a new tournament
@@ -55,7 +45,7 @@ func CreateTournament(c *fiber.Ctx) error {
 func GetAllTournament(c *fiber.Ctx) error {
 	var allTournament []models.Tournament
 	database.Database.Db.Find(&allTournament)
-	var responseTournaments []TournamentSerialize
+	var responseTournaments []models.Tournament
 	for _, tournament := range allTournament {
 		responseTournament := CreateResponseTournament(tournament)
 		responseTournaments = append(responseTournaments, responseTournament)
@@ -107,31 +97,11 @@ func UpdateTournament(c *fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 
-	type UpdateTournament struct {
-		Name       string `json:"name"`
-		Count      uint   `json:"count"`
-		Price      uint   `json:"price"`
-		Game       string `json:"game"`
-		TeamsCount uint   `json:"teamsCount"`
-		IsFinished bool   `json:"isFinished"`
-		Mode       string `json:"mode"`
-		Updated_at time.Time
-	}
-
-	var updateData UpdateTournament
+	var updateData models.Tournament
 
 	if err := c.BodyParser(&updateData); err != nil {
 		return c.Status(500).JSON(err.Error())
 	}
-
-	tournament.Name = updateData.Name
-	tournament.Count = updateData.Count
-	tournament.Price = updateData.Price
-	tournament.Game = updateData.Game
-	tournament.TeamsCount = updateData.TeamsCount
-	tournament.IsFinished = updateData.IsFinished
-	tournament.Mode = updateData.Mode
-	tournament.Updated_at = updateData.Updated_at
 
 	database.Database.Db.Save(&tournament)
 

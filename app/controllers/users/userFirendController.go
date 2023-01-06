@@ -7,7 +7,7 @@ import (
 	"neeft_back/database"
 )
 
-/**
+/*
  * @Author ANYARONKE
  */
 
@@ -93,7 +93,7 @@ func GetUserFriend(c *fiber.Ctx) error {
 
 	var user1 models.User
 	var user2 models.User
-	//fmt.Println(userFriend.UserId)
+	//fmt.Println(userFriend.OwnerId)
 	database.Database.Db.Find(&user1, userFriend.UserId)
 	database.Database.Db.Find(&user2, userFriend.FriendId)
 	responseUserFriend := CreateResponseUserFriend(userFriend, user1, user2)

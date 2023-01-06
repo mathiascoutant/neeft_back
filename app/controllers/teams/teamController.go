@@ -24,15 +24,8 @@ type TeamSerialize struct {
 }
 
 // CreateResponseTeam  /**
-func CreateResponseTeam(userModel usersModel.User, teamModel usersModel.Team) TeamSerialize {
-	return TeamSerialize{
-		ID:              teamModel.ID,
-		User:            userModel,
-		Name:            teamModel.Name,
-		UserCount:       teamModel.UserCount,
-		GameName:        teamModel.GameName,
-		TournamentCount: teamModel.TournamentCount,
-	}
+func CreateResponseTeam(userModel usersModel.User, teamModel usersModel.Team) usersModel.Team {
+	return teamModel
 }
 
 // CreateTeam function to create a team
@@ -44,7 +37,7 @@ func CreateTeam(c *fiber.Ctx) error {
 	}
 
 	var user usersModel.User
-	if err := usersController.FindUser(team.UserId, &user); err != nil {
+	if err := usersController.FindUser(team.OwnerId, &user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
@@ -58,10 +51,10 @@ func CreateTeam(c *fiber.Ctx) error {
 func GetAllTeam(c *fiber.Ctx) error {
 	var teamsModel []usersModel.Team
 	database.Database.Db.Find(&teamsModel)
-	var responseTeams []TeamSerialize
+	var responseTeams []usersModel.Team
 	for _, team := range teamsModel {
 		var user usersModel.User
-		database.Database.Db.Find(&user, "id = ?", team.UserId)
+		database.Database.Db.Find(&user, "id = ?", team.OwnerId)
 		responseTeam := CreateResponseTeam(user, team)
 		responseTeams = append(responseTeams, responseTeam)
 	}
@@ -93,7 +86,7 @@ func GetTeam(c *fiber.Ctx) error {
 	}
 
 	var user usersModel.User
-	database.Database.Db.First(&user, team.UserId)
+	database.Database.Db.First(&user, team.OwnerId)
 	responseTeam := CreateResponseTeam(user, team)
 
 	return c.Status(200).JSON(responseTeam)

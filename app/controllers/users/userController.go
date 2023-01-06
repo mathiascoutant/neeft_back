@@ -13,27 +13,9 @@ import (
 	"time"
 )
 
-// UserSerialize User : this is the router for the users not the model of User
-// UserSerialize serializer
-type UserSerialize struct {
-	ID        uint   `json:"id"`
-	Username  string `json:"username"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
-}
-
 // CreateResponseUser /**
-func CreateResponseUser(userModel models.User) UserSerialize {
-	return UserSerialize{
-		ID:        userModel.ID,
-		Username:  userModel.Username,
-		FirstName: userModel.FirstName,
-		LastName:  userModel.LastName,
-		Email:     userModel.Email,
-		Password:  userModel.Password,
-	}
+func CreateResponseUser(userModel models.User) models.User {
+	return userModel
 }
 
 func EmailExist(email string) bool {
@@ -68,7 +50,7 @@ func CreateUser(c *fiber.Ctx) error {
 func GetAllUser(c *fiber.Ctx) error {
 	var allUsers []models.User
 	database.Database.Db.Find(&allUsers)
-	var responseUsers []UserSerialize
+	var responseUsers []models.User
 	for _, user := range allUsers {
 		responseUser := CreateResponseUser(user)
 		responseUsers = append(responseUsers, responseUser)
