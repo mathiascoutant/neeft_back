@@ -36,6 +36,9 @@ func CreateTournament(c *fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 
+	// Default values
+	tournament.IsFinished = false
+
 	database.Database.Db.Create(&tournament)
 	responseTournament := CreateResponseTournament(tournament)
 	return c.Status(200).JSON(responseTournament)
@@ -102,6 +105,9 @@ func UpdateTournament(c *fiber.Ctx) error {
 	if err := c.BodyParser(&updateData); err != nil {
 		return c.Status(500).JSON(err.Error())
 	}
+
+	// Resetting values that clients shouldn't modify
+	updateData.IsFinished = tournament.IsFinished
 
 	database.Database.Db.Save(&tournament)
 

@@ -41,6 +41,9 @@ func CreateTeam(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
+	// We set those values back to default because the clients shouldn't touch it in the first place
+	team.IsBanned = false
+
 	database.Database.Db.Create(&team)
 
 	responseTeam := CreateResponseTeam(user, team)

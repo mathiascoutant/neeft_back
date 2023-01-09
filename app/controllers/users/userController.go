@@ -41,6 +41,10 @@ func CreateUser(c *fiber.Ctx) error {
 	hashUserPassword := helper.HashAndSalt([]byte(user.Password))
 	user.Password = hashUserPassword
 
+	// Default values
+	user.IsBan = false
+	user.IsSuperAdmin = false
+
 	database.Database.Db.Create(&user)
 	responseUser := CreateResponseUser(user)
 	return c.Status(200).JSON(responseUser)
@@ -107,7 +111,8 @@ func UpdateUser(c *fiber.Ctx) error {
 		FirstName  string `json:"first_name"`
 		LastName   string `json:"last_name"`
 		Email      string `json:"email"`
-		Password   string `json:"password"`
+		BirthDate  string `json:"birth_date"`
+		Avatar     string `json:"avatar"`
 		Updated_at time.Time
 	}
 
@@ -121,7 +126,8 @@ func UpdateUser(c *fiber.Ctx) error {
 	user.FirstName = updateData.FirstName
 	user.LastName = updateData.LastName
 	user.Email = updateData.Email
-	user.Password = updateData.Password
+	user.BirthDate = updateData.BirthDate
+	user.Avatar = updateData.Avatar
 	user.Updated_at = updateData.Updated_at
 
 	database.Database.Db.Save(&user)
@@ -129,7 +135,6 @@ func UpdateUser(c *fiber.Ctx) error {
 	responseUser := CreateResponseUser(user)
 
 	return c.Status(200).JSON(responseUser)
-
 }
 
 // DeleteUser function to delete a user
