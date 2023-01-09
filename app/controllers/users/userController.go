@@ -58,6 +58,7 @@ func CreateUser(c *fiber.Ctx) error {
 
 	hashUserPassword := helper.HashAndSalt([]byte(user.Password))
 	user.Password = hashUserPassword
+	user.LastUserAgent = string(c.Request().Header.UserAgent())
 
 	database.Database.Db.Create(&user)
 	responseUser := CreateResponseUser(user)
@@ -171,3 +172,26 @@ func DeleteUser(c *fiber.Ctx) error {
 	}
 	return c.Status(200).JSON("Successfully deleted User")
 }
+
+/*
+// JWTDebug used to test JWT authentication
+func JWTDebug(c *fiber.Ctx) error {
+	claims := config.JWTClaims{}
+
+	if err := utils.CheckJWT(c, &claims); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	fmt.Println("after")
+	fmt.Println(claims.UserId)
+	fmt.Println(claims.Email)
+
+	user := users.User{}
+
+	if err := FindUserByClaim(claims, &user); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	return c.Status(200).JSON(user)
+}
+*/
