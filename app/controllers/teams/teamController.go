@@ -12,6 +12,7 @@ import (
 	"neeft_back/app/models/teams"
 	usersModel "neeft_back/app/models/users"
 	"neeft_back/database"
+	"time"
 )
 
 // TeamSerialize  User : this is the router for the users not the model of User
@@ -156,22 +157,25 @@ func AddBadgeTeam(c *fiber.Ctx) error {
 		Description: result.Description,
 		Category:    result.Category,
 		Section:     result.Section,
+		ReceiveDate: time.Now(),
 	}
 
 	type BadgeResponse struct {
-		Id       uint   `json:"id"`
-		Title    string `json:"title"`
-		Section  uint   `json:"section"`
-		Category uint   `json:"category"`
-		Image    string `json:"image"`
+		Id          uint      `json:"id"`
+		Title       string    `json:"title"`
+		Section     uint      `json:"section"`
+		Category    uint      `json:"category"`
+		Image       string    `json:"image"`
+		ReceiveDate time.Time `json:"receive_date"`
 	}
 
 	resp := BadgeResponse{
-		Id:       badge.ID,
-		Title:    badge.Title,
-		Section:  badge.Section,
-		Category: badge.Category,
-		Image:    badge.Image,
+		Id:          badge.ID,
+		Title:       badge.Title,
+		Section:     badge.Section,
+		Category:    badge.Category,
+		Image:       badge.Image,
+		ReceiveDate: badge.ReceiveDate,
 	}
 
 	database.Database.Db.Create(&badge)

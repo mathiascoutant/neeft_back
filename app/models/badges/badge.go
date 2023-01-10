@@ -1,5 +1,7 @@
 package badges
 
+import "time"
+
 const (
 	RecipientTeam uint = 0
 	RecipientUser uint = 1
@@ -14,6 +16,7 @@ type Badge struct {
 	Image       string `json:"image"`
 	Section     uint   `json:"section" gorm:"not null"`
 	Category    uint   `json:"category" gorm:"not null"`
+	ReceiveDate time.Time
 }
 
 type BadgeInput struct {
