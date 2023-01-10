@@ -17,5 +17,5 @@ func main() {
 	app.Use(logger.New())
 
 	routes.SetupRouters(app)
-	log.Fatal(app.Listen(":3000"))
+	log.Fatal(app.Listen(":8080"))
 }

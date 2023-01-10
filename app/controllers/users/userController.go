@@ -8,6 +8,7 @@ import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"neeft_back/app/helper"
+	"neeft_back/app/models/badges"
 	"neeft_back/app/models/users"
 	"neeft_back/database"
 	"time"
@@ -170,4 +171,67 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(404).JSON(err.Error())
 	}
 	return c.Status(200).JSON("Successfully deleted User")
+}
+
+func AddBadgeUser(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+
+	var user users.User
+
+	if err != nil {
+		return c.Status(400).JSON("Please ensure that :id is an integer")
+	}
+
+	err = FindUser(id, &user)
+
+	if err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	var result badges.BadgeInput
+	var badgeTemp badges.Badge
+
+	if err := c.BodyParser(&result); err != nil {
+		return c.Status(500).JSON(err.Error())
+	}
+
+	// Check if the user already has this badge
+	if err := database.Database.Db.Where("recipient = ? AND recipient_id = ? AND title = ?", badges.RecipientUser, id, result.Title).First(&badgeTemp).Error; err == nil {
+		return c.Status(400).JSON("This user already has this badge")
+	}
+
+	if len(result.Title) == 0 || len(result.Description) == 0 {
+		return c.Status(400).JSON("Invalid name or description")
+	}
+
+	badge := badges.Badge{
+		Recipient:   badges.RecipientUser,
+		RecipientId: uint(id),
+		Title:       result.Title,
+		Description: result.Description,
+		Category:    result.Category,
+		Section:     result.Section,
+		ReceiveDate: time.Now(),
+	}
+
+	type BadgeResponse struct {
+		Id          uint      `json:"id"`
+		Title       string    `json:"title"`
+		Section     uint      `json:"section"`
+		Category    uint      `json:"category"`
+		Image       string    `json:"image"`
+		ReceiveDate time.Time `json:"receive_date"`
+	}
+
+	resp := BadgeResponse{
+		Id:          badge.ID,
+		Title:       badge.Title,
+		Section:     badge.Section,
+		Category:    badge.Category,
+		Image:       badge.Image,
+		ReceiveDate: badge.ReceiveDate,
+	}
+
+	database.Database.Db.Create(&badge)
+	return c.Status(200).JSON(resp)
 }
