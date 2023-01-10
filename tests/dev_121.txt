@@ -5,11 +5,11 @@ Badges:
         Erreur quand description du badge vide: OK
         Erreur quand catégorie du badge vide: OK
         Erreur quand on essaye de créer un badge qui existe déjà: OK
-        Erreur quand la date est invalide: TODO
+        Erreur quand la date est invalide: C'est le back qui donne la date aux clients donc pas besoin de vérifier
     Team:
         Ajout d'un badge: OK
         Erreur quand nom du badge est vide: OK
         Erreur quand description du badge vide: OK
         Erreur quand catégorie du badge vide: OK
         Erreur quand on essaye de créer un badge qui existe déjà: OK
-        Erreur quand la date est invalide: TODO
+        Erreur quand la date est invalide: C'est le back qui donne la date aux clients donc pas besoin de vérifier
